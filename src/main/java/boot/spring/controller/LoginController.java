@@ -8,14 +8,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import boot.spring.po.MSG;
 import boot.spring.po.User;
 import boot.spring.service.LoginService;
 
 
 
 @Controller
-public class Login {
+public class LoginController {
 	@Autowired
 	LoginService loginservice;
 	
