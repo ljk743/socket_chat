@@ -1,0 +1,13 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/spring_websocket?serverTimezone=UTC
+    username: root
+    password: ljk123456
+    driver-class-name: com.mysql.jdbc.Driver
+
+logging:
+  config: classpath:log4j2.xml
+
