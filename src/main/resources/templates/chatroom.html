@@ -64,13 +64,13 @@ body{
 <script>
 Date.prototype.format = function(fmt) { 
      var o = { 
-        "M+" : this.getMonth()+1,                 //月份 
-        "d+" : this.getDate(),                    //日 
-        "h+" : this.getHours(),                   //小时 
-        "m+" : this.getMinutes(),                 //分 
-        "s+" : this.getSeconds(),                 //秒 
-        "q+" : Math.floor((this.getMonth()+3)/3), //季度 
-        "S"  : this.getMilliseconds()             //毫秒 
+        "M+" : this.getMonth()+1,                 //Month
+        "d+" : this.getDate(),                    //Day
+        "h+" : this.getHours(),                   //Hour
+        "m+" : this.getMinutes(),                 //Min
+        "s+" : this.getSeconds(),                 //Sec
+        "q+" : Math.floor((this.getMonth()+3)/3), //Quarter(Of a year)
+        "S"  : this.getMilliseconds()             //Milli_Sec
     }; 
     if(/(y+)/.test(fmt)) {
             fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length)); 
@@ -87,7 +87,7 @@ Date.prototype.format = function(fmt) {
     $(document).ready(function() {
     	var user;
     	var uid;
-    	// 指定websocket路径
+    	// Specify the path of websocket.
 	    var websocket;
     	$.get("/currentuser",function(data){
     		user = data.name;
@@ -99,23 +99,23 @@ Date.prototype.format = function(fmt) {
 			}
 			websocket.onmessage = function(event) {
 	       	 var data=JSON.parse(event.data);
-	            if(data.to==0){//上线消息
+	            if(data.to==0){//Online reminder messages
 	            	if(data.text!=user)
 	            	{	
 	            		$("#users").append('<a href="#" onclick="talk(this)" class="list-group-item">'+data.text+'</a>');
 	            		alert(data.text + "is online");
 	            	}
-	            }else if(data.to==-2){//下线消息
+	            }else if(data.to==-2){//Offline reminder messages
 	            	if(data.text!=user)
 	            	{	
 	            		$("#users > a").remove(":contains('"+data.text+"')");
 	            		alert(data.text + "is offline");
 	            	}
 	            }else {
-	            	// 普通消息
-		            // 接收服务端的实时消息并添加到HTML页面中
+	            	// Common messages
+		            // Receive the real-time message from the server and add it to the HTML page.
 		            $("#log-container").append("<div class='bg-info'><label class='text-danger'>"+data.from+"&nbsp;"+data.date+"</label><div class='text-success'>"+data.text+"</div></div><br>");
-		            // 滚动条滚动到最低部
+		            // Scroll the bar to the lowest part.
 		            scrollToBottom();
 	            }
 	        };
