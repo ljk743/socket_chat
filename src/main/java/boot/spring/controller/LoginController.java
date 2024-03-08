@@ -39,6 +39,7 @@ public class LoginController {
 	
 	@RequestMapping("/logout")
 	public String logout(HttpSession httpSession){
+		httpSession.invalidate();
 		return "login";
 	}
 	

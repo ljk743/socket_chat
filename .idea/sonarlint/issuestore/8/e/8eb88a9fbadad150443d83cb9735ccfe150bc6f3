@@ -1,11 +1,0 @@
-
-\
-java:S1192"FDefine a constant instead of duplicating this literal "login" 3 times.(Íı‡Ç
-€
-java:S6833"eReplace the "@Controller" annotation by "@RestController" and remove all "@ResponseBody" annotations.(íœ¡ñùÿÿÿÿ
-X
-java:S6813"BRemove this field injection and use constructor injection instead.(êæÄŞ
-^
-java:S4488."HReplace "@RequestMapping(method = RequestMethod.GET)" with "@GetMapping"(ıÍâÖ
-J
-java:S1128"/Remove this unused import 'boot.spring.po.MSG'.(×Â‘ıÿÿÿÿ

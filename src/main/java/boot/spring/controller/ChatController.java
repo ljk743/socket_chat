@@ -25,6 +25,9 @@ public class ChatController {
 	LoginService loginservice;
 	
 
+	//方法onlineusers接受一个请求参数currentuser（当前用户），并返回一个用户名称集合。
+	// 这个方法首先从WebSocketServer获取当前所有在线用户的会话池（一个ConcurrentHashMap），
+	// 然后从中删除当前用户的名称，最后返回剩余的在线用户名称集合。
 	@RequestMapping("/onlineusers")
 	@ResponseBody
 	public Set<String> onlineusers(@RequestParam("currentuser") String currentuser) {
@@ -41,12 +44,4 @@ public class ChatController {
 	}
 
 
-	@RequestMapping("getuid")
-	@ResponseBody
-	public User getuid(@RequestParam("username") String username) {
-		Long a = loginservice.getUidbyname(username);
-		User u = new User();
-		u.setUid(a);
-		return u;
-	}
 }
