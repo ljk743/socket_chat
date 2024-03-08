@@ -16,7 +16,7 @@ body{
     	<div class="row">
     		<div class="col-md-3">
     		<div class="panel panel-primary">
-				  <div class="panel-heading">
+				  <div class="panel-heading" style="background-color: #333333">
 				    <h3 class="panel-title">Online</h3>
 				  </div>
 				  <div class="panel-body">
@@ -27,7 +27,7 @@ body{
 				  </div>
 				</div>
     			<div class="panel panel-primary" id="online">
-				  <div class="panel-heading">
+				  <div class="panel-heading" style="background-color: #333333">
 				    <h3 class="panel-title">Current online users</h3>
 				  </div>
 				  <div class="panel-body">
@@ -36,7 +36,7 @@ body{
 				  </div>
 				</div>
 				<div class="panel panel-primary">
-				  <div class="panel-heading">
+				  <div class="panel-heading" style="background-color: #333333">
 				    <h3 class="panel-title">Group broadcast</h3>
 				  </div>
 				  <div class="panel-body">
@@ -47,19 +47,21 @@ body{
     		</div>
   			<div class="col-md-9">
   				<div class="panel panel-primary">
-				  <div class="panel-heading">
+				  <div class="panel-heading" style="background-color: #333333">
 				    <h3 class="panel-title" id="talktitle"></h3>
 				  </div>
 				  <div class="panel-body">
-				    <div class="well" id="log-container" style="height:400px;overflow-y:scroll">
+				    <div class="well" id="log-container" style="height:50%;overflow-y:scroll">
 				    
 				    </div>
-				    	<input type="text" id="myinfo" class="form-control col-md-12" /> <br>
+				    	<input type="text" id="myinfo" class="form-control col-md-12"/>
 				    	<button id="send" type="button" class="btn btn-primary">Send</button>
 					  	<!-- Add to the group broadcast panel or another appropriate place -->
 					  	<form id="fileUploadForm" enctype="multipart/form-data">
-							<input type="file" id="fileInput" name="file" class="form-control"><br>
-						  	<button type="button" id="sendFile" class="btn btn-primary">Send File</button>
+							<br>
+							<input type="file" id="fileInput" name="file" class="form-control">
+
+							<button type="button" id="sendFile" class="btn btn-primary">Send File</button>
 					  	</form>
 				  </div>
 				</div>

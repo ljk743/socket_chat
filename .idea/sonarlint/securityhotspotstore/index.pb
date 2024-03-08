@@ -34,3 +34,5 @@ e
 5src/main/java/boot/spring/config/WebSocketConfig.java,e\6\e661d44fa17060402c3f35b5e350f20faade6e29
 b
 2src/main/java/boot/spring/config/MyDataSource.java,0\c\0c3f5619a5896856d4a63ed61cd3d1e7f2f7a4dd
+]
+-src/main/java/boot/spring/po/FileMessage.java,d\e\de30667c2564804fb2755f95af47ebd3046eafd7
