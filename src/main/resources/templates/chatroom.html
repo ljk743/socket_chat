@@ -16,7 +16,7 @@ body{
     	<div class="row">
     		<div class="col-md-3">
     		<div class="panel panel-primary">
-				  <div class="panel-heading" style="background-color: #333333">
+				  <div class="panel-heading" style="background: #262626">
 				    <h3 class="panel-title">Online</h3>
 				  </div>
 				  <div class="panel-body">
@@ -27,7 +27,7 @@ body{
 				  </div>
 				</div>
     			<div class="panel panel-primary" id="online">
-				  <div class="panel-heading" style="background-color: #333333">
+				  <div class="panel-heading">
 				    <h3 class="panel-title">Current online users</h3>
 				  </div>
 				  <div class="panel-body">
@@ -36,7 +36,7 @@ body{
 				  </div>
 				</div>
 				<div class="panel panel-primary">
-				  <div class="panel-heading" style="background-color: #333333">
+				  <div class="panel-heading">
 				    <h3 class="panel-title">Group broadcast</h3>
 				  </div>
 				  <div class="panel-body">
@@ -47,164 +47,124 @@ body{
     		</div>
   			<div class="col-md-9">
   				<div class="panel panel-primary">
-				  <div class="panel-heading" style="background-color: #333333">
+				  <div class="panel-heading">
 				    <h3 class="panel-title" id="talktitle"></h3>
 				  </div>
 				  <div class="panel-body">
-				    <div class="well" id="log-container" style="height:50%;overflow-y:scroll">
+				    <div class="well" id="log-container" style="height:400px;overflow-y:scroll">
 				    
 				    </div>
-				    	<input type="text" id="myinfo" class="form-control col-md-12"/>
+				    	<input type="text" id="myinfo" class="form-control col-md-12" /> <br>
 				    	<button id="send" type="button" class="btn btn-primary">Send</button>
-					  	<!-- Add to the group broadcast panel or another appropriate place -->
-					  	<form id="fileUploadForm" enctype="multipart/form-data">
-							<br>
-							<input type="file" id="fileInput" name="file" class="form-control">
-
-							<button type="button" id="sendFile" class="btn btn-primary">Send File</button>
-					  	</form>
-				  </div>
+				    </div>
 				</div>
   			</div>
     	</div>
-    </div>
-	<script>
-		Date.prototype.format = function(fmt) {
-			var o = {
-				"M+" : this.getMonth()+1,                 //Month
-				"d+" : this.getDate(),                    //Day
-				"h+" : this.getHours(),                   //Hour
-				"m+" : this.getMinutes(),                 //Min
-				"s+" : this.getSeconds(),                 //Sec
-				"q+" : Math.floor((this.getMonth()+3)/3), //Quarter(Of a year)
-				"S"  : this.getMilliseconds()             //Milli_Sec
-			};
-			if(/(y+)/.test(fmt)) {
-				fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+    </div> 
+<script>
+Date.prototype.format = function(fmt) { 
+     var o = { 
+        "M+" : this.getMonth()+1,                 //Month
+        "d+" : this.getDate(),                    //Day
+        "h+" : this.getHours(),                   //Hour
+        "m+" : this.getMinutes(),                 //Min
+        "s+" : this.getSeconds(),                 //Sec
+        "q+" : Math.floor((this.getMonth()+3)/3), //Quarter(Of a year)
+        "S"  : this.getMilliseconds()             //Milli_Sec
+    }; 
+    if(/(y+)/.test(fmt)) {
+            fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length)); 
+    }
+     for(var k in o) {
+        if(new RegExp("("+ k +")").test(fmt)){
+             fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+         }
+     }
+    return fmt; 
+}
+
+
+    $(document).ready(function() {
+    	var user;
+    	var uid;
+    	// Specify the path of websocket.
+	    var websocket;
+    	$.get("/currentuser",function(data){
+    		user = data.name;
+    		uid = data.uid;
+    		$("#user").html(user);
+    		
+	        if ('WebSocket' in window) {
+				websocket = new WebSocket("ws://localhost:8080/webSocket/"+user);
 			}
-			for(var k in o) {
-				if(new RegExp("("+ k +")").test(fmt)){
-					fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
-				}
-			}
-			return fmt;
-		}
-
-		$(document).ready(function() {
-			var user;
-			var uid;
-			// Specify the path of websocket.
-			var websocket;
-			$("#sendFile").click(function() {
-				var file = $('#fileInput')[0].files[0]; // 获取文件输入控件中的文件
-				if (!file) {
-					alert('Please select a file!');
-					return;
-				}
-				var formData = new FormData();
-				formData.append('file', file); // 这里的 'file' 是发送到后端的字段名
-
-				// 发送文件到你的服务器
-				$.ajax({
-					url: '/uploadFile', // 服务器上处理文件上传的URL
-					type: 'POST',
-					data: formData,
-					processData: false, // 告诉jQuery不要处理发送的数据
-					contentType: false, // 告诉jQuery不要设置Content-Type请求头
-					success: function(data) {
-						// 假设后端返回一个对象，其中包含文件的URL和其他信息
-						var messageData = {
-							from: user,
-							to: $("body").data("to") || -1, // 发送给特定用户或群体
-							type: 'file', // 表明消息类型为文件
-							url: data.fileUrl, // 后端返回的文件URL
-							text: 'Sent a file' // 文件消息的描述
-						};
-						websocket.send(JSON.stringify(messageData)); // 通过WebSocket发送消息
-						$("#log-container").append("<div>Sent a file: <a href='" + data.fileUrl + "' target='_blank'>View file</a></div><br>");
-						scrollToBottom();
-					},
-					error: function(xhr, status, error) {
-						alert('File upload failed: ' + error);
-					}
-				});
-			});
-			$.get("/currentuser",function(data){
-				user = data.name;
-				uid = data.uid;
-				$("#user").html(user);
-
-				if ('WebSocket' in window) {
-					websocket = new WebSocket("ws://localhost:8080/webSocket/"+user);
-				}
-				websocket.onmessage = function(event) {
-					var data = JSON.parse(event.data);
-					if(data.to == 0) {//Online reminder messages
-						if(data.text != user) {
-							$("#users").append('<a href="#" onclick="talk(this)" class="list-group-item">'+data.text+'</a>');
-							alert(data.text + " is online");
-						}
-					} else if(data.to == -2) {//Offline reminder messages
-						if(data.text != user) {
-							$("#users > a").remove(":contains('" + data.text + "')");
-							alert(data.text + " is offline");
-						}
-					} else {
-						// Differentiate message types here
-						var messageContent;
-						if(data.type === 'text') {
-							messageContent = "<div class='text-success'>"+data.text+"</div>";
-						} else if(data.type === 'image') {
-							messageContent = "<div class='text-success'><img src='" + data.url + "' alt='Image' style='max-width:200px;'/></div>";
-						} else if(data.type === 'file') {
-							messageContent = "<div class='text-success'><a href='" + data.url + "' target='_blank'>Download file</a></div>";
-						}
-						// Append the message in chat room
-						$("#log-container").append("<div class='bg-info'><label class='text-danger'>" + data.from + "&nbsp;" + new Date().format("yyyy-MM-dd hh:mm:ss") + "</label>" + messageContent + "</div><br>");
-						scrollToBottom();
-					}
-				};
-
-				// Fetch online users
-				$.post("/onlineusers?currentuser="+user,function(data){
-					for(var i = 0; i < data.length; i++)
-						$("#users").append('<a href="#" onclick="talk(this)" class="list-group-item">'+data[i]+'</a>');
-				});
-			});
-
-			$("#broadcast").click(function(){
-				var data = {};
-				data["from"] = "System broadcast info";
-				data["to"] = -1;
-				data["text"] = $("#msg").val();
-				websocket.send(JSON.stringify(data));
-			});
-
-			$("#send").click(function() {
-				if ($("body").data("to") == undefined) {
-					alert("Please chose who to chat!");
-					return false;
-				}
-				var data = {};
-				data["from"] = user;
-				data["to"] = $("body").data("to");
-				data["text"] = $("#myinfo").val();
-				websocket.send(JSON.stringify(data));
-				$("#log-container").append("<div class='bg-success'><label class='text-info'>我&nbsp;" + new Date().format("yyyy-MM-dd hh:mm:ss") + "</label><div class='text-info'>" + $("#myinfo").val() + "</div></div><br>");
-				scrollToBottom();
-				$("#myinfo").val("");
-			});
+			websocket.onmessage = function(event) {
+	       	 var data=JSON.parse(event.data);
+	            if(data.to==0){//Online reminder messages
+	            	if(data.text!=user)
+	            	{	
+	            		$("#users").append('<a href="#" onclick="talk(this)" class="list-group-item">'+data.text+'</a>');
+	            		alert(data.text + "is online");
+	            	}
+	            }else if(data.to==-2){//Offline reminder messages
+	            	if(data.text!=user)
+	            	{	
+	            		$("#users > a").remove(":contains('"+data.text+"')");
+	            		alert(data.text + "is offline");
+	            	}
+	            }else {
+	            	// Common messages
+		            // Receive the real-time message from the server and add it to the HTML page.
+		            $("#log-container").append("<div class='bg-info'><label class='text-danger'>"+data.from+"&nbsp;"+data.date+"</label><div class='text-success'>"+data.text+"</div></div><br>");
+		            // Scroll the bar to the lowest part.
+		            scrollToBottom();
+	            }
+	        };
+	        
+	        $.post("/onlineusers?currentuser="+user,function(data){
+    		for(var i=0;i<data.length;i++)
+    			$("#users").append('<a href="#" onclick="talk(this)" class="list-group-item">'+data[i]+'</a>');
+    		});
+    	
+    	});
+    	
+    	
+        
+        
+        
+        $("#broadcast").click(function(){
+        	var data = {};
+			data["from"] = "System broadcast info";
+			data["to"] = -1;
+			data["text"] = $("#msg").val();
+			websocket.send(JSON.stringify(data));
+        });
+        
+        $("#send").click(function() {
+        	if ($("body").data("to")==undefined) {
+        		alert("Please chose who to chat!");
+        		return false;
+        	}
+			var data = {};
+			data["from"] = user;
+			data["to"] = $("body").data("to");
+			data["text"] = $("#myinfo").val();
+			websocket.send(JSON.stringify(data));
+			$("#log-container").append("<div class='bg-success'><label class='text-info'>我&nbsp;" + new Date().format("yyyy-MM-dd hh:mm:ss") + "</label><div class='text-info'>" + $("#myinfo").val() + "</div></div><br>");
+			scrollToBottom();
+			$("#myinfo").val("");
 		});
-
-		function talk(a){
-			$("#talktitle").text("Chat with " + a.innerHTML);
-			$("body").data("to",a.innerHTML);
-		}
-
-		function scrollToBottom() {
-			var div = document.getElementById('log-container');
-			div.scrollTop = div.scrollHeight;
-		}
-	</script>
+        
+    });
+   
+   function talk(a){
+   	$("#talktitle").text("Chat with"+a.innerHTML);
+   	$("body").data("to",a.innerHTML);
+   }
+   function scrollToBottom(){
+		var div = document.getElementById('log-container');
+		div.scrollTop = div.scrollHeight;
+	}
+</script>    
+    
   </body>
 </html>
