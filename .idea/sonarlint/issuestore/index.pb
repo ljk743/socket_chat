@@ -9,8 +9,6 @@ V
 &src/main/java/boot/spring/po/User.java,f\c\fc49af39c9bcb4ddf8639163001e8f782e44f178
 h
 8src/main/java/boot/spring/controller/ChatController.java,8\5\85828929d10ba915e4d14b51cf3bde1d835bfb9b
-U
-%src/main/java/boot/spring/po/MSG.java,7\e\7e92121bac3df2c287890d9a2df7e7b5a674778f
 i
 9src/main/java/boot/spring/controller/LoginController.java,5\a\5afb6784480be930f8739035bb2783fb89b28d3d
 l
@@ -36,3 +34,5 @@ b
 2src/main/java/boot/spring/config/MyDataSource.java,0\c\0c3f5619a5896856d4a63ed61cd3d1e7f2f7a4dd
 ]
 -src/main/java/boot/spring/po/FileMessage.java,d\e\de30667c2564804fb2755f95af47ebd3046eafd7
+n
+>src/main/java/boot/spring/controller/FileUploadController.java,3\c\3cd42475a11df1640c66cb991f35891d4cd4c027
