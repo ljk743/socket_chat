@@ -1,9 +1,11 @@
 
-\
-java:S1192"FDefine a constant instead of duplicating this literal "login" 3 times.(Íı‡Ç
-€
-java:S6833"eReplace the "@Controller" annotation by "@RestController" and remove all "@ResponseBody" annotations.(íœ¡ñùÿÿÿÿ
-X
-java:S6813"BRemove this field injection and use constructor injection instead.(êæÄŞ
-^
-java:S4488."HReplace "@RequestMapping(method = RequestMethod.GET)" with "@GetMapping"(ıÍâÖ
+c
+java:S1192"FDefine a constant instead of duplicating this literal "login" 3 times.(Íı‡Ç8Û¥²Êâ1
+‡
+java:S6833"eReplace the "@Controller" annotation by "@RestController" and remove all "@ResponseBody" annotations.(íœ¡ñùÿÿÿÿ8ä¥²Êâ1
+_
+java:S6813"BRemove this field injection and use constructor injection instead.(êæÄŞ8ä¥²Êâ1
+e
+java:S44880"HReplace "@RequestMapping(method = RequestMethod.GET)" with "@GetMapping"(ıÍâÖ8ê¥²Êâ1
+g
+java:S44888"JReplace "@RequestMapping(method = RequestMethod.POST)" with "@PostMapping"(ÚŞ•8î¥²Êâ1

@@ -15,5 +15,9 @@
     <select id="getnamebyid" parameterType="long"  resultMap="staffMap">
     	select * from staff where staff_id=#{id}
     </select>
+    <insert id="insertUser" parameterType="boot.spring.po.Staff">
+        INSERT INTO staff (username, password)
+        VALUES (#{username}, #{password})
+    </insert>
     
 </mapper>

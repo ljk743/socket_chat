@@ -1,11 +1,11 @@
 
-\
-java:S3973"GUse indentation to denote the code conditionally executed by this "if".(ÿŒğ`
-d
-java:S3973"IUse indentation to denote the code conditionally executed by this "else".(„¶áìøÿÿÿÿ
-d
-java:S3973!"IUse indentation to denote the code conditionally executed by this "else".(„¶áìøÿÿÿÿ
-d
-java:S3973)"IUse indentation to denote the code conditionally executed by this "else".(„¶áìøÿÿÿÿ
-X
-java:S6813"BRemove this field injection and use constructor injection instead.(êæÄŞ
+c
+java:S3973"GUse indentation to denote the code conditionally executed by this "if".(ÿŒğ`8¬ìÂÊâ1
+k
+java:S3973"IUse indentation to denote the code conditionally executed by this "else".(„¶áìøÿÿÿÿ8¬ìÂÊâ1
+k
+java:S3973!"IUse indentation to denote the code conditionally executed by this "else".(„¶áìøÿÿÿÿ8¬ìÂÊâ1
+k
+java:S3973)"IUse indentation to denote the code conditionally executed by this "else".(„¶áìøÿÿÿÿ8¬ìÂÊâ1
+_
+java:S6813"BRemove this field injection and use constructor injection instead.(êæÄŞ8´ìÂÊâ1

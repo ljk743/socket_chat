@@ -41,7 +41,16 @@ public class LoginServiceImpl implements LoginService{
 			else
 			return null;
 	}
-	
-	
-
+	@Override
+	public boolean checkUserExists(String name) {
+		Staff s = loginmapper.getpwdbyname(name); // 这里我们重用现有的mapper方法，您可能需要根据实际情况调整
+		return s != null;
+	}
+	@Override
+	public boolean addNewUser(String username, String password) {
+		Staff newUser = new Staff();
+		newUser.setUsername(username);
+		newUser.setPassword(password);
+		return loginmapper.insertUser(newUser) > 0;
+	}
 }

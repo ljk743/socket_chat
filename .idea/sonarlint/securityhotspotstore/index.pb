@@ -36,3 +36,7 @@ b
 -src/main/java/boot/spring/po/FileMessage.java,d\e\de30667c2564804fb2755f95af47ebd3046eafd7
 n
 >src/main/java/boot/spring/controller/FileUploadController.java,3\c\3cd42475a11df1640c66cb991f35891d4cd4c027
+f
+6src/main/java/boot/spring/utils/PasswordValidator.java,f\c\fca99f1a225d6f7b97238e708d3ce1b332b14e2f
+9
+	staff.sql,b\7\b71c3ce3624c10dc89b6ef960737f96fce1d11c6
