@@ -15,7 +15,7 @@ The traditional HTTP protocol generally realizes half-duplex communication by se
 **Env Requirements:**
 - JDK >= 11 (Tested)
 - Maven >= 3.8.1 (Tested)
-- Mysql8 (Tested)
+- Mysql-8 (Tested)
 
 #
 **To run the project on tomcat server:**

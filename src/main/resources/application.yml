@@ -6,7 +6,7 @@ spring:
     url: jdbc:mysql://localhost:3306/spring_websocket?serverTimezone=UTC
     username: root
     password: ljk123456
-    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
 
 logging:

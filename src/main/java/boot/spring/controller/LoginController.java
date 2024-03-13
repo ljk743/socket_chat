@@ -1,6 +1,7 @@
 package boot.spring.controller;
 
 import boot.spring.po.User;
+import boot.spring.security.JwtUtil;
 import boot.spring.service.LoginService;
 import boot.spring.utils.PasswordValidator;
 import org.apache.shiro.SecurityUtils;
@@ -27,29 +28,28 @@ public class LoginController {
         if (username == null || pwd == null) {
             return "loginfail";
         }
-
+        UsernamePasswordToken token = new UsernamePasswordToken(username, pwd);
         Subject currentUser = SecurityUtils.getSubject();
+        currentUser.login(token);
+        if (currentUser.isAuthenticated()) {
 
-        if (!currentUser.isAuthenticated()) {
-            UsernamePasswordToken token = new UsernamePasswordToken(username, pwd);
-            token.setRememberMe(true);
-
-            try {
-                currentUser.login(token);
                 // 登录成功，从 Shiro 获取用户信息
                 // 假设登录成功后你需要用户的ID存储在会话中
                 // 这个逻辑可以根据你实际情况调整
                 Long uid = loginservice.getUidbyname(username);
                 httpSession.setAttribute("uid", uid);
+
+                // 生成JWT
+                String jwt = JwtUtil.createToken(username); // 假设用户名作为JWT的主题
+                System.out.println("--------------------------------------------------------------------------------------------------");
+                System.out.println(jwt);
+                httpSession.setAttribute("jwt", jwt); // 将JWT存储在会话中
+
                 return "chatroom";
-            } catch (Exception e) {
-                // 登录失败
-                //redirectAttributes.addFlashAttribute("error", "Invalid username or password.");
-                return "loginfail";
-            }
         } else {
-            // 已经登录
-            return "chatroom";
+            System.out.println("--------------------------------------------------------------------------------------------------");
+            // 登陆失败
+            return "loginfail";
         }
     }
 

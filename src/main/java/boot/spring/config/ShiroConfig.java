@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.servlet.Filter;
-import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -82,7 +81,7 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/register", "anon");
         filterChainDefinitionMap.put("/reg", "anon");
         filterChainDefinitionMap.put("/onlineusers", "authc");
-        filterChainDefinitionMap.put("/webSocket/*", "jwtFilter"); // 使用 JwtFilter 进行 JWT 认证
+        filterChainDefinitionMap.put("/webSocket/*", "jwtFilter,authc"); // 使用 JwtFilter 进行 JWT 认证
         filterChainDefinitionMap.put("/currentuser", "authc");
         shiroFilter.setFilterChainDefinitionMap(filterChainDefinitionMap);
 
