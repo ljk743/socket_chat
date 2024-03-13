@@ -16,8 +16,7 @@
     	select * from staff where staff_id=#{id}
     </select>
     <insert id="insertUser" parameterType="boot.spring.po.Staff">
-        INSERT INTO staff (username, password)
-        VALUES (#{username}, #{password})
+        INSERT INTO staff (username, password, last_update)
+        VALUES (#{username}, #{password}, CURRENT_TIMESTAMP)
     </insert>
-    
 </mapper>

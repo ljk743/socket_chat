@@ -8,6 +8,9 @@ spring:
     password: ljk123456
     driver-class-name: com.mysql.jdbc.Driver
 
+
 logging:
   config: classpath:log4j2.xml
+  level:
+    org.apache.shiro: info
 

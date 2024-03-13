@@ -1,7 +1,7 @@
 <!DOCTYPE>
 <html>
   <head>
-    <title>Chat_Room</title>
+    <title>ChatRoom</title>
     <script src="./js/jquery-1.12.3.min.js"></script>
 <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
 <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
@@ -16,8 +16,8 @@ body{
     	<div class="row">
     		<div class="col-md-3">
     		<div class="panel panel-primary">
-				  <div class="panel-heading" style="background: #262626">
-				    <h3 class="panel-title">Online</h3>
+				  <div class="panel-heading">
+				    <h3 class="panel-title">User</h3>
 				  </div>
 				  <div class="panel-body">
 				    <div class="list-group">
@@ -28,7 +28,7 @@ body{
 				</div>
     			<div class="panel panel-primary" id="online">
 				  <div class="panel-heading">
-				    <h3 class="panel-title">Current online users</h3>
+				    <h3 class="panel-title">Other Users</h3>
 				  </div>
 				  <div class="panel-body">
 				    <div class="list-group" id="users">
@@ -37,7 +37,7 @@ body{
 				</div>
 				<div class="panel panel-primary">
 				  <div class="panel-heading">
-				    <h3 class="panel-title">Group broadcast</h3>
+				    <h3 class="panel-title">Broadcast</h3>
 				  </div>
 				  <div class="panel-body">
 				    <input type="text" class="form-control"  id="msg" /><br>
@@ -69,8 +69,8 @@ Date.prototype.format = function(fmt) {
         "h+" : this.getHours(),                   //Hour
         "m+" : this.getMinutes(),                 //Min
         "s+" : this.getSeconds(),                 //Sec
-        "q+" : Math.floor((this.getMonth()+3)/3), //Quarter(Of a year)
-        "S"  : this.getMilliseconds()             //Milli_Sec
+        "q+" : Math.floor((this.getMonth()+3)/3), //Season
+        "S"  : this.getMilliseconds()             //Mill_sec
     }; 
     if(/(y+)/.test(fmt)) {
             fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length)); 
@@ -87,7 +87,7 @@ Date.prototype.format = function(fmt) {
     $(document).ready(function() {
     	var user;
     	var uid;
-    	// Specify the path of websocket.
+    	// the route of websocket
 	    var websocket;
     	$.get("/currentuser",function(data){
     		user = data.name;
@@ -99,23 +99,23 @@ Date.prototype.format = function(fmt) {
 			}
 			websocket.onmessage = function(event) {
 	       	 var data=JSON.parse(event.data);
-	            if(data.to==0){//Online reminder messages
+	            if(data.to==0){//Online broadcast
 	            	if(data.text!=user)
 	            	{	
 	            		$("#users").append('<a href="#" onclick="talk(this)" class="list-group-item">'+data.text+'</a>');
-	            		alert(data.text + "is online");
+	            		alert(data.text + "is online!");
 	            	}
-	            }else if(data.to==-2){//Offline reminder messages
+	            }else if(data.to==-2){//is offline
 	            	if(data.text!=user)
 	            	{	
 	            		$("#users > a").remove(":contains('"+data.text+"')");
 	            		alert(data.text + "is offline");
 	            	}
 	            }else {
-	            	// Common messages
-		            // Receive the real-time message from the server and add it to the HTML page.
+	            	// common messages
+		            // Receive real-time messages and add them to HTML pages
 		            $("#log-container").append("<div class='bg-info'><label class='text-danger'>"+data.from+"&nbsp;"+data.date+"</label><div class='text-success'>"+data.text+"</div></div><br>");
-		            // Scroll the bar to the lowest part.
+		            // Scroll the bar to bottom.
 		            scrollToBottom();
 	            }
 	        };
@@ -133,7 +133,7 @@ Date.prototype.format = function(fmt) {
         
         $("#broadcast").click(function(){
         	var data = {};
-			data["from"] = "System broadcast info";
+			data["from"] = "System INFO";
 			data["to"] = -1;
 			data["text"] = $("#msg").val();
 			websocket.send(JSON.stringify(data));
@@ -141,7 +141,7 @@ Date.prototype.format = function(fmt) {
         
         $("#send").click(function() {
         	if ($("body").data("to")==undefined) {
-        		alert("Please chose who to chat!");
+        		alert("Please chose who to chat.");
         		return false;
         	}
 			var data = {};
@@ -157,7 +157,7 @@ Date.prototype.format = function(fmt) {
     });
    
    function talk(a){
-   	$("#talktitle").text("Chat with"+a.innerHTML);
+   	$("#talktitle").text("Chat with "+a.innerHTML+".");
    	$("body").data("to",a.innerHTML);
    }
    function scrollToBottom(){

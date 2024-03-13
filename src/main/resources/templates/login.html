@@ -19,9 +19,23 @@
 	<div class="col-md-6 col-md-offset-3">
       <form  action="loginvalidate" method="post">
         <h2 >Login to chatroom</h2>
-        <input type="text" name="username" id="inputEmail" class="form-control" placeholder="username" required autofocus/>
+        <input type="text" name="username" id="inputName" class="form-control" placeholder="username" required autofocus/>
         <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required/>
         <button class="btn btn-lg btn-primary btn-block" type="submit">login</button>
       </form>
+
+      <button id="redirectButton" class="btn btn-lg btn-primary btn-block">register</button>
+      <script>
+        // 找到按钮元素
+        var redirectButton = document.getElementById('redirectButton');
+
+        // 给按钮添加点击事件监听器
+        redirectButton.addEventListener('click', function() {
+          // 在点击时，将页面重定向到指定的登录页面
+          window.location.href = "http://localhost:8080/reg";
+        });
+      </script>
+    </div>
+    </div>
   </body>
 </html>
