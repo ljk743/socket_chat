@@ -28,7 +28,7 @@ public class LoginController {
         if (username == null || pwd == null) {
             return "loginfail";
         }if (username.length() > 16 || pwd.length() > 40) {
-            return "loginfail";
+            return "lengthInvalid";
         }
         UsernamePasswordToken token = new UsernamePasswordToken(username, pwd);
         Subject currentUser = SecurityUtils.getSubject();
@@ -83,7 +83,7 @@ public class LoginController {
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public String register(@RequestParam("username") String username, @RequestParam("password") String password, HttpSession session) {
         if (username.length() > 16 || password.length() > 40) {
-            return "backendfail";
+            return "lengthInvalid";
         }
         // 验证密码复杂度
         if (!PasswordValidator.isValid(password)) {

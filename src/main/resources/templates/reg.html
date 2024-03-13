@@ -39,7 +39,6 @@
       // 更新正则表达式以包含数字
       var passwordPattern = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#%*&])(?=.*[0-9])[A-Za-z!@#%*&0-9]{8,}$/;
       var errorText = document.getElementById('passwordError');
-
       if (!passwordPattern.test(password)) {
         // 如果密码不符合要求，显示错误消息
         errorText.innerHTML = 'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character (!@#%*&), and be at least 8 characters long.';
