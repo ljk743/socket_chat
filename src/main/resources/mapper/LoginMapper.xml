@@ -6,8 +6,8 @@
 	<resultMap type="boot.spring.po.Staff" id="staffMap">
         <id column="staff_id" property="staff_id" ></id>
         <result column="username" property="username"/>
-        <result column="password" property="password"/>
-        <result column="last_name" property="last_name"/>
+        <result column="hashedpassword" property="hashedpassword"/>
+        <result column="salt" property="salt"/>
     </resultMap>
     <select id="getpwdbyname" parameterType="String"  resultMap="staffMap">
     	select * from staff where binary username=#{name}
@@ -16,7 +16,10 @@
     	select * from staff where staff_id=#{id}
     </select>
     <insert id="insertUser" parameterType="boot.spring.po.Staff">
-        INSERT INTO staff (username, password, last_update)
-        VALUES (#{username}, #{password}, CURRENT_TIMESTAMP)
+        INSERT INTO staff (username, hashedpassword, last_update, salt)
+        VALUES (#{username}, #{hashedpassword},CURRENT_TIMESTAMP, #{salt})
     </insert>
+    <select id="getSaltByName" parameterType="String"  resultMap="staffMap">
+        select * from staff where binary username=#{name}
+    </select>
 </mapper>

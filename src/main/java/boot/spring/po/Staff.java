@@ -4,7 +4,10 @@ package boot.spring.po;
 public class Staff {
     private byte staff_id;
     private String username;
-    private String password;
+    private String hashedpassword;
+
+    private String salt;
+
     private String last_update;
 
 
@@ -32,11 +35,20 @@ public class Staff {
         this.username = username;
     }
 
-    public String getPassword() {
-        return password;
+    public String getHashedpassword() {
+        return hashedpassword;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setHashedpassword(String hashedpassword) {
+        this.hashedpassword = hashedpassword;
     }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
+
 }

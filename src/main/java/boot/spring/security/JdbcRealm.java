@@ -11,7 +11,7 @@ public class JdbcRealm extends org.apache.shiro.realm.jdbc.JdbcRealm {
     public JdbcRealm(DataSource dataSource) {
         super();
         this.setDataSource(dataSource);
-        this.setAuthenticationQuery("SELECT password FROM spring_websocket.staff WHERE username = ?");
+        this.setAuthenticationQuery("SELECT hashedpassword FROM spring_websocket.staff WHERE username = ?");
         // Configure other queries if needed
     }
 

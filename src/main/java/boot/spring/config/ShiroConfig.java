@@ -1,8 +1,6 @@
 package boot.spring.config;
 
 import boot.spring.security.JdbcRealm;
-import boot.spring.security.JwtFilter;
-import boot.spring.security.JwtRealm;
 import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
@@ -32,21 +30,10 @@ public class ShiroConfig {
     }
 
     @Bean
-    public JwtFilter jwtFilter() {
-        return new JwtFilter();
-    }
-
-    @Bean
-    public JwtRealm jwtRealm() {
-        return new JwtRealm();
-    }
-
-    @Bean
     public List<Realm> realms() {
         List<Realm> realms = new ArrayList<>();
         realms.add(setjdbcRealm());
         // 添加其他的 Realm，比如 JwtRealm
-        realms.add(jwtRealm());
         return realms;
     }
 
@@ -71,7 +58,6 @@ public class ShiroConfig {
 
         // 添加自定义的过滤器
         Map<String, Filter> filters = new LinkedHashMap<>();
-        filters.put("jwtFilter", jwtFilter());
         shiroFilter.setFilters(filters);
 
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
@@ -81,7 +67,7 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/register", "anon");
         filterChainDefinitionMap.put("/reg", "anon");
         filterChainDefinitionMap.put("/onlineusers", "authc");
-        filterChainDefinitionMap.put("/webSocket/*", "jwtFilter,authc"); // 使用 JwtFilter 进行 JWT 认证
+        filterChainDefinitionMap.put("/webSocket/*", "authc");
         filterChainDefinitionMap.put("/currentuser", "authc");
         shiroFilter.setFilterChainDefinitionMap(filterChainDefinitionMap);
 

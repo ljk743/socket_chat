@@ -1,10 +1,11 @@
 package boot.spring.controller;
 
 import boot.spring.po.User;
-import boot.spring.security.JwtUtil;
 import boot.spring.service.LoginService;
+import boot.spring.utils.HashTools;
 import boot.spring.utils.PasswordValidator;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,36 +22,39 @@ import javax.servlet.http.HttpSession;
 @Controller
 public class LoginController {
     @Autowired
-    LoginService loginservice;
+    private LoginService loginservice;
 
     @RequestMapping("/loginvalidate")
     public String loginvalidate(@RequestParam("username") String username, @RequestParam("password") String pwd, HttpSession httpSession, RedirectAttributes redirectAttributes) {
+        // 检查用户名和密码是否为空
         if (username == null || pwd == null) {
             return "loginfail";
-        }if (username.length() > 16 || pwd.length() > 40) {
+        }
+
+        // 检查用户名和密码的长度是否符合要求
+        if (username.length() > 16 || pwd.length() > 40) {
             return "lengthInvalid";
         }
-        UsernamePasswordToken token = new UsernamePasswordToken(username, pwd);
-        Subject currentUser = SecurityUtils.getSubject();
-        currentUser.login(token);
-        if (currentUser.isAuthenticated()) {
 
-                // 登录成功，从 Shiro 获取用户信息
-                // 假设登录成功后你需要用户的ID存储在会话中
-                // 这个逻辑可以根据你实际情况调整
+        try {
+            String salt = loginservice.getSaltByName(username);
+            String hashedPassword = HashTools.hashWithSHA256(pwd, salt);
+            UsernamePasswordToken token = new UsernamePasswordToken(username, hashedPassword);
+            Subject currentUser = SecurityUtils.getSubject();
+            currentUser.login(token);
+
+            if (currentUser.isAuthenticated()) {
                 Long uid = loginservice.getUidbyname(username);
                 httpSession.setAttribute("uid", uid);
 
-                // 生成JWT
-                String jwt = JwtUtil.createToken(username); // 假设用户名作为JWT的主题
-                System.out.println("--------------------------------------------------------------------------------------------------");
-                System.out.println(jwt);
-                httpSession.setAttribute("jwt", jwt); // 将JWT存储在会话中
-
                 return "chatroom";
-        } else {
-            System.out.println("--------------------------------------------------------------------------------------------------");
-            // 登陆失败
+            } else {
+                // 这个分支实际上可能永远不会执行，因为如果认证失败，会直接抛出异常
+                return "loginfail";
+            }
+        } catch (AuthenticationException ae) {
+            // 处理身份验证失败的情况
+            System.out.println("Login Failed : " + ae.getMessage());
             return "loginfail";
         }
     }
@@ -96,8 +100,10 @@ public class LoginController {
             return "alreadyexists"; // 用户名已存在，返回失败视图
         }
 
+        String salt = HashTools.generateSalt(); // 生成盐
+        String hashedPassword = HashTools.hashWithSHA256(password, salt);
         // 添加新用户（需要在LoginService中实现此方法）
-        boolean success = loginservice.addNewUser(username, password);
+        boolean success = loginservice.addNewUser(username, hashedPassword, salt);
         if (success) {
             return "regOK"; // 如果注册成功，跳转到一个确认页面或登录页面
         } else {

@@ -21,7 +21,7 @@ public class LoginServiceImpl implements LoginService{
 	public String getpwdbyname(String name) {
 		Staff s=loginmapper.getpwdbyname(name);
 		if(s!=null)
-		return s.getPassword();
+		return s.getHashedpassword();
 		else
 		return null;
 	}
@@ -47,10 +47,20 @@ public class LoginServiceImpl implements LoginService{
 		return s != null;
 	}
 	@Override
-	public boolean addNewUser(String username, String password) {
+	public boolean addNewUser(String username, String hashedpassword,String salt) {
 		Staff newUser = new Staff();
 		newUser.setUsername(username);
-		newUser.setPassword(password);
+		newUser.setHashedpassword(hashedpassword);
+		newUser.setSalt(salt);
 		return loginmapper.insertUser(newUser) > 0;
+	}
+
+	@Override
+	public String getSaltByName(String username) {
+		Staff s = loginmapper.getSaltByName(username);
+		if(s!=null)
+			return s.getSalt();
+		else
+			return null;
 	}
 }
