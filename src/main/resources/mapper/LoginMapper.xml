@@ -16,8 +16,8 @@
     	select * from staff where staff_id=#{id}
     </select>
     <insert id="insertUser" parameterType="boot.spring.po.Staff">
-        INSERT INTO staff (username, hashedpassword, last_update, salt)
-        VALUES (#{username}, #{hashedpassword},CURRENT_TIMESTAMP, #{salt})
+        INSERT INTO staff (username, hashedpassword, last_update, salt, email)
+        VALUES (#{username}, #{hashedpassword},CURRENT_TIMESTAMP, #{salt}, #{email})
     </insert>
     <select id="getSaltByName" parameterType="String"  resultMap="staffMap">
         select * from staff where binary username=#{name}

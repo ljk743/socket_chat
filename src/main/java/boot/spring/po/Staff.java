@@ -5,10 +5,11 @@ public class Staff {
     private byte staff_id;
     private String username;
     private String hashedpassword;
-
-    private String salt;
-
     private String last_update;
+    private String salt;
+    private String email;
+
+
 
 
     public String getLast_update() {
@@ -49,6 +50,14 @@ public class Staff {
 
     public void setSalt(String salt) {
         this.salt = salt;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
 }

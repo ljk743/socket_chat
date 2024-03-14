@@ -47,11 +47,12 @@ public class LoginServiceImpl implements LoginService{
 		return s != null;
 	}
 	@Override
-	public boolean addNewUser(String username, String hashedpassword,String salt) {
+	public boolean addNewUser(String username, String hashedpassword,String salt, String email) {
 		Staff newUser = new Staff();
 		newUser.setUsername(username);
 		newUser.setHashedpassword(hashedpassword);
 		newUser.setSalt(salt);
+		newUser.setEmail(email);
 		return loginmapper.insertUser(newUser) > 0;
 	}
 
