@@ -7,10 +7,22 @@ spring:
     username: root
     password: ljk123456
     driver-class-name: com.mysql.cj.jdbc.Driver
+  servlet:
+    multipart:
+      max-file-size: 15MB
+      max-request-size: 15MB
 
 
 logging:
   config: classpath:log4j2.xml
   level:
     org.apache.shiro: info
+minio:
+  access:
+    name: V84x2ZoK0NJjJs9XdDT7
+    secret: q5UTqgIXRbNCWVFywcs8rXH773qLdxFXzZM2s7R6
+  url: http://192.168.56.103:9000
+  bucket:
+    name: testbucket
+
 
