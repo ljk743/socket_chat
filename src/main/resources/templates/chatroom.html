@@ -129,11 +129,8 @@ Date.prototype.format = function(fmt) {
     		});
     	
     	});
-    	
-    	
-        
-        
-        
+
+
         $("#broadcast").click(function(){
         	var data = {};
 			data["from"] = "系统消息";
@@ -158,12 +155,15 @@ Date.prototype.format = function(fmt) {
 		});
 		// 文件上传按钮点击事件处理
 		$("#sendfile").click(function() {
+			if ($("body").data("to")==undefined) {
+				alert("请选择聊天对象");
+				return false;
+			}
 			var file = document.getElementById('fileInput').files[0];
 			if (!file) {
 				alert("请选择一个文件");
 				return;
 			}
-
 			var formData = new FormData();
 			formData.append('file', file);
 			formData.append('username', user);
@@ -180,11 +180,40 @@ Date.prototype.format = function(fmt) {
 					// 构造一个包含文件URL的WebSocket消息
 					var message = {
 						from: user,
-						to: $("body").data("to") || -1, // 如果没有指定聊天对象，则默认为群发
-						text: "Here is a file: " + fileUrl,
+						to: $("body").data("to"), // 如果没有指定聊天对象，则默认为群发
+						text: fileUrl,
 					};
+					const UpdatedURL = message.text;
+					const fileName = UpdatedURL.split('/').pop();
+					const fileExtension = fileName.split('.').pop().toLowerCase();
+
+					// 定义支持直接在HTML中渲染的文件类型
+					const imageExtensions = ['png', 'jpg', 'jpeg', 'gif'];
+
+					// 根据文件类型决定如何处理
+					if (imageExtensions.includes(fileExtension)) {
+						// 如果是图片，使用<img>标签渲染
+						$("#log-container").append("<div class='bg-success'><label class='text-info'>我&nbsp;" + new Date().format("yyyy-MM-dd hh:mm:ss") + '</label><img src=\"' + fileUrl + '\" alt=\"Image\" style=\"max-width:60%;\">' +"</div><br>");
+					} else {
+						// 其他文件类型，提供下载链接
+						$("#log-container").append(
+								"<div class='bg-success'>" +
+								"<label class='text-info'>我&nbsp;" +
+								new Date().format("yyyy-MM-dd hh:mm:ss") +
+								"</label>" +
+								"<div class='text-info'>" +
+								"<a href='" + fileUrl + "' target='_blank'>" + // 添加链接和新标签页打开的目标
+								"<svg xmlns='http://www.w3.org/2000/svg' width='8%' height='8%' viewBox='0 0 1024 1024'>" +
+								"<path d='M834.303 352.752L624.215 142.571c-5.588-5.208-12.83-8.648-20.833-8.648H259.056c-21.565 0-40.904 9.022-54.85 23.243-14.498 14.036-23.056 33.466-23.056 54.664v600.251c0 21.287 8.558 41.085 23.056 55.305 13.945 14.046 33.472 22.691 54.85 22.691h505.716c20.813 0 40.343-8.646 54.475-22.501l0.735-0.19v-0.176c14.132-14.506 22.868-33.842 22.868-55.129v-438.32c0-7.62-2.967-14.87-8.547-21.009z m-213.446-130.98l134.247 134.241H652.102c-8.557 0-16.363-3.538-21.758-9.301l-0.75-0.74c-5.379-5.396-8.736-13.204-8.736-21.29v-102.91z m163.8 590.309c0 5.39-2.04 10.318-5.757 14.037-3.728 3.902-8.555 5.761-14.129 5.761H259.056c-5.395 0-10.229-1.858-13.944-5.761-3.53-3.719-5.763-8.647-5.763-14.037V211.83c0-5.12 2.232-10.139 5.763-13.766 3.716-3.716 8.55-6.037 13.944-6.037h326.659v132.655c0 17.573 7.254 33.375 18.599 45.549l1.302 1.307c11.72 12.175 28.447 19.33 46.486 19.33h132.556v421.213z' fill='currentColor'/>" +
+								"</svg>" +
+								"</a>" +
+								"<br>"+
+								 file.name+
+								"</div>" +
+								"</div><br>"
+						);
+					}
 					websocket.send(JSON.stringify(message));
-					$("#log-container").append("<div class='bg-success'><label class='text-info'>我&nbsp;" + new Date().format("yyyy-MM-dd hh:mm:ss") + "</label><div class='text-info'>" + fileUrl + "</div></div><br>");
 					scrollToBottom();
 				},
 				error: function(xhr, status, error) {

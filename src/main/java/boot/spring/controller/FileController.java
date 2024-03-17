@@ -52,10 +52,9 @@ public class FileController {
                     : "";
 
             // 使用UUID生成文件名以确保唯一性
-            String uniqueFileName = UUID.randomUUID() + extension;
-            String salt = loginService.getSaltByName(username);
+            String uniqueFileName = UUID.randomUUID().toString() + extension;
             // 构建文件的存储路径
-            String objectName = String.format("chat/%s/%s", salt, uniqueFileName);
+            String objectName = String.format("chat/%s", uniqueFileName);
 
             // 上传文件到MinIO
             minioClient.putObject(
@@ -64,7 +63,7 @@ public class FileController {
                             .contentType(file.getContentType())
                             .build());
 
-            return "上传成功，可预览的URL: " + objectName;
+            return minioUrl+"/"+bucketName+"/"+objectName;
         } catch (MinioException e) {
             return "上传失败: MinIO服务出现问题 - " + e.getMessage();
         } catch (IOException e) {
