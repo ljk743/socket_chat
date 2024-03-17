@@ -1,50 +1,61 @@
 package boot.spring.po;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import java.util.Date;
 
-import com.alibaba.fastjson.annotation.JSONField;
 public class Message {
 
-	//发送者name
-	public String from;
-	//接收者name
-	public String to;
-	//发送的文本
-	public String text;
-	//发送时间
-	@JSONField(format="yyyy-MM-dd HH:mm:ss")
-	public Date date;
+    //发送者name
+    private String from;
+    //接收者name
+    private String to;
+    //发送的文本
+    private String text;
+    //文件url
+    private String files;
+    //发送时间
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    private Date date;
 
-	public String getFrom() {
-		return from;
-	}
+    public String getFiles() {
+        return files;
+    }
 
-	public void setFrom(String from) {
-		this.from = from;
-	}
+    public void setFiles(String files) {
+        this.files = files;
+    }
 
-	public String getTo() {
-		return to;
-	}
+    public String getFrom() {
+        return from;
+    }
 
-	public void setTo(String to) {
-		this.to = to;
-	}
+    public void setFrom(String from) {
+        this.from = from;
+    }
 
-	public String getText() {
-		return text;
-	}
+    public String getTo() {
+        return to;
+    }
 
-	public void setText(String text) {
-		this.text = text;
-	}
+    public void setTo(String to) {
+        this.to = to;
+    }
 
-	public Date getDate() {
-		return date;
-	}
+    public String getText() {
+        return text;
+    }
 
-	public void setDate(Date date) {
-		this.date = date;
-	}
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
 
 }
