@@ -1,5 +1,11 @@
 server:
-  port: 8080
+  port: 443
+  ssl:
+    key-store: classpath:keystore.p12
+    key-store-password: ljk123456
+    keyStoreType: PKCS12
+    keyAlias: spring
+
 
 spring:
   datasource:
@@ -17,6 +23,12 @@ logging:
   config: classpath:log4j2.xml
   level:
     org.apache.shiro: info
+    org:
+      springframework:
+        boot: DEBUG
+      apache:
+        catalina: DEBUG
+
 minio:
   access:
     name: V84x2ZoK0NJjJs9XdDT7
@@ -25,4 +37,5 @@ minio:
   bucket:
     name: testbucket
 
+debug: true
 

@@ -13,7 +13,7 @@ The traditional HTTP protocol generally realizes half-duplex communication by se
 5. Add the functions of online reminder and offline reminder for friends, and automatically notify all other online people when friends are online or offline. Don't refresh the page to see the real-time online user list.
 
 **Env Requirements:**
-- JDK >= 11 (Tested)
+- JDK = 11 (Important for SSL)
 - Maven >= 3.8.1 (Tested)
 - Mysql-8 (Tested)
 
