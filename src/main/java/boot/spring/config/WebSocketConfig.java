@@ -1,31 +1,29 @@
 package boot.spring.config;
 
-import javax.annotation.Resource;
+// Import necessary annotations and classes for WebSocket configuration
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import org.springframework.web.socket.config.annotation.EnableWebSocket;
-import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
-import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
 /**
- * WebScoket配置处理器
+ * WebSocket configuration handler.
+ * This class is marked with @Configuration to indicate that it contains bean definitions
+ * for application context configuration. Specifically, it configures WebSocket support
+ * for the application.
  */
 @Configuration
 public class WebSocketConfig {
-	 /**
-     * ServerEndpointExporter 作用
+    /**
+     * ServerEndpointExporter's role
+     * <p>
+     * This bean will automatically register any WebSocket endpoints declared with the @ServerEndpoint annotation.
+     * The ServerEndpointExporter is a necessary bean to configure if you're using server-endpoint based WebSocket configuration.
      *
-     * 这个Bean会自动注册使用@ServerEndpoint注解声明的websocket endpoint
-     *
-     * @return
+     * @return ServerEndpointExporter - The bean that enables automatic registration of WebSocket endpoints.
      */
-	@Bean
+    @Bean
     public ServerEndpointExporter serverEndpointExporter() {
         return new ServerEndpointExporter();
     }
-
 }
