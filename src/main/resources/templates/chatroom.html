@@ -1,7 +1,7 @@
 <!DOCTYPE>
 <html>
   <head>
-    <title>聊天室</title>
+    <title>Chat Room</title>
     <script src="./js/jquery-1.12.3.min.js"></script>
 <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
 <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
@@ -17,18 +17,18 @@ body{
     		<div class="col-md-3">
     		<div class="panel panel-primary">
 				  <div class="panel-heading">
-				    <h3 class="panel-title">当前登录用户</h3>
+				    <h3 class="panel-title">User</h3>
 				  </div>
 				  <div class="panel-body">
 				    <div class="list-group">
-					 <a href="#" class="list-group-item">你好，<span id="user"></span></a>
-					 <a href="logout" class="list-group-item">退出</a>
+					 <a href="#" class="list-group-item">Hello，<span id="user"></span></a>
+					 <a href="logout" class="list-group-item">Logout</a>
 					</div>
 				  </div>
 				</div>
     			<div class="panel panel-primary" id="online">
 				  <div class="panel-heading">
-				    <h3 class="panel-title">当前在线的其他用户</h3>
+				    <h3 class="panel-title">Other online users</h3>
 				  </div>
 				  <div class="panel-body">
 				    <div class="list-group" id="users">
@@ -37,11 +37,11 @@ body{
 				</div>
 				<div class="panel panel-primary">
 				  <div class="panel-heading">
-				    <h3 class="panel-title">群发系统广播</h3>
+				    <h3 class="panel-title">Broadcast</h3>
 				  </div>
 				  <div class="panel-body">
 					  <input type="text" class="form-control"  id="msg" /><br>
-					  <button id="broadcast" type="button" class="btn btn-primary">发送</button>
+					  <button id="broadcast" type="button" class="btn btn-primary">Send</button>
 				  </div>
 				</div>
     		</div>
@@ -55,9 +55,9 @@ body{
 				    
 				    </div>
 				    	<input type="text" id="myinfo" class="form-control col-md-12" />
-				    	<button id="send" type="button" class="btn btn-primary">发送</button><br><br>
+				    	<button id="send" type="button" class="btn btn-primary">Send</button><br><br>
 					  	<input type="file" id="fileInput" name="file" required>
-					  	<button id="sendfile" type="button" class="btn btn-primary">上传文件</button>
+					  	<button id="sendfile" type="button" class="btn btn-primary">Upload A File</button>
 				    </div>
 				</div>
   			</div>
@@ -66,13 +66,13 @@ body{
 <script>
 Date.prototype.format = function(fmt) { 
      var o = { 
-        "M+" : this.getMonth()+1,                 //月份 
-        "d+" : this.getDate(),                    //日 
-        "h+" : this.getHours(),                   //小时 
-        "m+" : this.getMinutes(),                 //分 
-        "s+" : this.getSeconds(),                 //秒 
-        "q+" : Math.floor((this.getMonth()+3)/3), //季度 
-        "S"  : this.getMilliseconds()             //毫秒 
+        "M+" : this.getMonth()+1,                 //Month
+        "d+" : this.getDate(),                    //Day
+        "h+" : this.getHours(),                   //Hour
+        "m+" : this.getMinutes(),                 //Min
+        "s+" : this.getSeconds(),                 //Sec
+        "q+" : Math.floor((this.getMonth()+3)/3), //Season
+        "S"  : this.getMilliseconds()             //Milli-sec
     }; 
     if(/(y+)/.test(fmt)) {
             fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length)); 
@@ -89,7 +89,6 @@ Date.prototype.format = function(fmt) {
     $(document).ready(function() {
     	var user;
     	var uid;
-    	// 指定websocket路径
 	    var websocket;
     	$.get("/currentuser",function(data){
     		user = data.name;
@@ -97,46 +96,47 @@ Date.prototype.format = function(fmt) {
     		$("#user").html(user);
     		
 	        if ('WebSocket' in window) {
+				//Websocket URL
 				websocket = new WebSocket("ws://localhost:8080/webSocket/"+user);
 				//websocket = new WebSocket("wss://localhost:8080/webSocket/"+user);
 			}
 			websocket.onmessage = function(event) {
 	       	 var data=JSON.parse(event.data);
-	            if(data.to==0){//上线消息
+	            if(data.to==0){//Online message
 	            	if(data.text!=user)
 	            	{	
 	            		$("#users").append('<a href="#" onclick="talk(this)" class="list-group-item">'+data.text+'</a>');
-	            		alert(data.text + "上线了");
+	            		alert(data.text + "is offline");
 	            	}
-	            }else if(data.to==-2){//下线消息
+	            }else if(data.to==-2){//Offline message
 	            	if(data.text!=user)
 	            	{	
 	            		$("#users > a").remove(":contains('"+data.text+"')");
 	            		alert(data.text + "is offline");
 	            	}
 	            }else {
-	            	// 普通消息
-		            // 接收服务端的实时消息并添加到HTML页面中
+	            	// Common message
+		            // Receive the real-time message from the server and add it to the HTML page
 					if (data.files) {
 						const UpdatedURL = data.files;
 						const fileName = UpdatedURL.split('/').pop();
 						const fileExtension = fileName.split('.').pop().toLowerCase();
-						// 定义支持直接在HTML中渲染的文件类型
+						// Defines file types that support direct rendering in HTML
 						const imageExtensions = ['png', 'jpg', 'jpeg', 'gif'];
 
-						// 根据文件类型决定如何处理
+						// Decide what to do according to the file type
 						if (imageExtensions.includes(fileExtension)) {
-							// 如果是图片，使用<img>标签渲染
+							// If the file type is image, use <img>
 							$("#log-container").append("<div class='bg-info'><label class='text-danger'>" + data.from +"&nbsp;" + data.date + '</label><br><img src=\"' + data.files + '\" alt=\"Image\" style=\"max-width:60%;\">' + "</div><br>");
 						} else {
-							// 其他文件类型，提供下载链接
+							// Other types
 							$("#log-container").append(
 									"<div class='bg-info'>" +
-									"<label class='text-info'>我&nbsp;" +
+									"<label class='text-info'>Me&nbsp;" +
 									new Date().format("yyyy-MM-dd hh:mm:ss") +
 									"</label>" +
 									"<div class='text-danger'>" +
-									"<a href='" + data.files + "' target='_blank'>" + // 添加链接和新标签页打开的目标
+									"<a href='" + data.files + "' target='_blank'>" + // Add <a> and url to open the file
 									"<svg xmlns='http://www.w3.org/2000/svg' width='8%' height='8%' viewBox='0 0 1024 1024'>" +
 									"<path d='M834.303 352.752L624.215 142.571c-5.588-5.208-12.83-8.648-20.833-8.648H259.056c-21.565 0-40.904 9.022-54.85 23.243-14.498 14.036-23.056 33.466-23.056 54.664v600.251c0 21.287 8.558 41.085 23.056 55.305 13.945 14.046 33.472 22.691 54.85 22.691h505.716c20.813 0 40.343-8.646 54.475-22.501l0.735-0.19v-0.176c14.132-14.506 22.868-33.842 22.868-55.129v-438.32c0-7.62-2.967-14.87-8.547-21.009z m-213.446-130.98l134.247 134.241H652.102c-8.557 0-16.363-3.538-21.758-9.301l-0.75-0.74c-5.379-5.396-8.736-13.204-8.736-21.29v-102.91z m163.8 590.309c0 5.39-2.04 10.318-5.757 14.037-3.728 3.902-8.555 5.761-14.129 5.761H259.056c-5.395 0-10.229-1.858-13.944-5.761-3.53-3.719-5.763-8.647-5.763-14.037V211.83c0-5.12 2.232-10.139 5.763-13.766 3.716-3.716 8.55-6.037 13.944-6.037h326.659v132.655c0 17.573 7.254 33.375 18.599 45.549l1.302 1.307c11.72 12.175 28.447 19.33 46.486 19.33h132.556v421.213z' fill='currentColor'/>" +
 									"</svg>" +
@@ -150,7 +150,7 @@ Date.prototype.format = function(fmt) {
 					}else{
 		            	$("#log-container").append("<div class='bg-info'><label class='text-danger'>"+data.from+"&nbsp;"+data.date+"</label><div class='text-success'>"+data.text+"</div></div><br>");
 					}
-					// 滚动条滚动到最低部
+					// Scroll the page to bottom
 		            scrollToBottom();
 	            }
 	        };
@@ -165,7 +165,7 @@ Date.prototype.format = function(fmt) {
 
         $("#broadcast").click(function(){
         	var data = {};
-			data["from"] = "系统消息";
+			data["from"] = "Anonymous";
 			data["to"] = -1;
 			data["text"] = $("#msg").val();
 			websocket.send(JSON.stringify(data));
@@ -173,7 +173,7 @@ Date.prototype.format = function(fmt) {
         
         $("#send").click(function() {
         	if ($("body").data("to")==undefined) {
-        		alert("请选择聊天对象");
+        		alert("Please choose whom to chat with.");
         		return false;
         	}
 			var data = {};
@@ -181,25 +181,25 @@ Date.prototype.format = function(fmt) {
 			data["to"] = $("body").data("to");
 			data["text"] = $("#myinfo").val();
 			websocket.send(JSON.stringify(data));
-			$("#log-container").append("<div class='bg-success'><label class='text-info'>我&nbsp;" + new Date().format("yyyy-MM-dd hh:mm:ss") + "</label><div class='text-info'>" + $("#myinfo").val() + "</div></div><br>");
+			$("#log-container").append("<div class='bg-success'><label class='text-info'>Me&nbsp;" + new Date().format("yyyy-MM-dd hh:mm:ss") + "</label><div class='text-info'>" + $("#myinfo").val() + "</div></div><br>");
 			scrollToBottom();
 			$("#myinfo").val("");
 		});
-		// 文件上传按钮点击事件处理
+		// File uploader event listener
 		$("#sendfile").click(function() {
 			if ($("body").data("to")==undefined) {
-				alert("请选择聊天对象");
+				alert("Please choose whom to chat with.");
 				return false;
 			}
 			var file = document.getElementById('fileInput').files[0];
 			if (!file) {
-				alert("请选择一个文件");
+				alert("Please choose a file.");
 				return;
 			}
 			var formData = new FormData();
 			formData.append('file', file);
 			formData.append('username', user);
-			// 假设后端接口'/upload'能处理上传并返回文件的URL
+			// Upload file and get the URL
 			$.ajax({
 				url: '/upload',
 				type: 'POST',
@@ -207,12 +207,11 @@ Date.prototype.format = function(fmt) {
 				processData: false,
 				contentType: false,
 				success: function(responsedata) {
-					// 假设data是一个对象，其中包含文件的URL
-					var fileUrl = responsedata; // 获取文件URL
-					// 构造一个包含文件URL的WebSocket消息
+					var fileUrl = responsedata; // Get URL
+					// Constructs a message with a file URL
 					var message = {
 						from: user,
-						to: $("body").data("to"), // 如果没有指定聊天对象，则默认为群发
+						to: $("body").data("to"),
 						text: file.name,
 						files: fileUrl
 					};
@@ -220,22 +219,22 @@ Date.prototype.format = function(fmt) {
 					const fileName = UpdatedURL.split('/').pop();
 					const fileExtension = fileName.split('.').pop().toLowerCase();
 
-					// 定义支持直接在HTML中渲染的文件类型
+					// Defines file types that support direct rendering in HTML
 					const imageExtensions = ['png', 'jpg', 'jpeg', 'gif'];
 
-					// 根据文件类型决定如何处理
+					// Decide what to do according to the file type
 					if (imageExtensions.includes(fileExtension)) {
-						// 如果是图片，使用<img>标签渲染
+						// If it is a picture, use the < img > tag to render
 						$("#log-container").append("<div class='bg-success'><label class='text-info'>我&nbsp;" + new Date().format("yyyy-MM-dd hh:mm:ss") + '</label><br><img src=\"' + fileUrl + '\" alt=\"Image\" style=\"max-width:60%;\">' +"</div><br>");
 					} else {
-						// 其他文件类型，提供下载链接
+						// Other file types, provide download links
 						$("#log-container").append(
 								"<div class='bg-success'>" +
-								"<label class='text-info'>我&nbsp;" +
+								"<label class='text-info'>Me&nbsp;" +
 								new Date().format("yyyy-MM-dd hh:mm:ss") +
 								"</label>" +
 								"<div class='text-info'>" +
-								"<a href='" + fileUrl + "' target='_blank'>" + // 添加链接和新标签页打开的目标
+								"<a href='" + fileUrl + "' target='_blank'>" +
 								"<svg xmlns='http://www.w3.org/2000/svg' width='8%' height='8%' viewBox='0 0 1024 1024'>" +
 								"<path d='M834.303 352.752L624.215 142.571c-5.588-5.208-12.83-8.648-20.833-8.648H259.056c-21.565 0-40.904 9.022-54.85 23.243-14.498 14.036-23.056 33.466-23.056 54.664v600.251c0 21.287 8.558 41.085 23.056 55.305 13.945 14.046 33.472 22.691 54.85 22.691h505.716c20.813 0 40.343-8.646 54.475-22.501l0.735-0.19v-0.176c14.132-14.506 22.868-33.842 22.868-55.129v-438.32c0-7.62-2.967-14.87-8.547-21.009z m-213.446-130.98l134.247 134.241H652.102c-8.557 0-16.363-3.538-21.758-9.301l-0.75-0.74c-5.379-5.396-8.736-13.204-8.736-21.29v-102.91z m163.8 590.309c0 5.39-2.04 10.318-5.757 14.037-3.728 3.902-8.555 5.761-14.129 5.761H259.056c-5.395 0-10.229-1.858-13.944-5.761-3.53-3.719-5.763-8.647-5.763-14.037V211.83c0-5.12 2.232-10.139 5.763-13.766 3.716-3.716 8.55-6.037 13.944-6.037h326.659v132.655c0 17.573 7.254 33.375 18.599 45.549l1.302 1.307c11.72 12.175 28.447 19.33 46.486 19.33h132.556v421.213z' fill='currentColor'/>" +
 								"</svg>" +
@@ -250,7 +249,7 @@ Date.prototype.format = function(fmt) {
 					scrollToBottom();
 				},
 				error: function(xhr, status, error) {
-					console.error("文件上传失败:", error);
+					console.error("Upload fail:", error);
 				}
 			});
 		});
@@ -259,7 +258,7 @@ Date.prototype.format = function(fmt) {
 	});
    
    function talk(a){
-   	$("#talktitle").text("与"+a.innerHTML+"的聊天");
+   	$("#talktitle").text("Chat with "+a.innerHTML);
    	$("body").data("to",a.innerHTML);
    }
    function scrollToBottom(){

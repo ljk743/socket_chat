@@ -62,10 +62,10 @@
 
     isClickAllowed = false;
 
-    // 设置一分钟后重新允许点击
+    // Allow to re-click after 1 min
     setTimeout(function() {
       isClickAllowed = true;
-    }, 60000); // 60000 毫秒 = 1 分钟
+    }, 60000); // 60000 ms = 1 min
 
     const username = $("#inputName").val();
     const email = $("#inputEmail").val();
@@ -73,7 +73,7 @@
     const url = `/getcode?username=${encodeURIComponent(username)}&email=${encodeURIComponent(email)}`;
 
     $.get(url, function(data) {
-      console.log(data); // 处理接口返回的数据
+      console.log(data); // process the data return from the back-end
     }).fail(function(error) {
       console.error('Error:', error);
     });

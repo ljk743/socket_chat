@@ -22,14 +22,14 @@ public class MailVerificationController {
         String code = generateCode();
         mailservice.sendVerificationCode(email, code);
         System.out.println(email+username);
-        // 存储验证码逻辑
+        // The way to store the token
         redisCodeService.saveVerificationCode(username, email, code);
         return "Verification code sent.";
     }
 
     private String generateCode() {
         Random random = new Random();
-        int code = 100000 + random.nextInt(900000); // 生成六位随机数
+        int code = 100000 + random.nextInt(900000); // 6 bits random number
         return String.valueOf(code);
     }
 }
