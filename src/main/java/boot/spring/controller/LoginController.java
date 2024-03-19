@@ -2,6 +2,7 @@ package boot.spring.controller;
 
 import boot.spring.po.User;
 import boot.spring.service.LoginService;
+import boot.spring.service.RedisCodeService;
 import boot.spring.utils.EmailValidator;
 import boot.spring.utils.HashTools;
 import boot.spring.utils.PasswordValidator;
@@ -23,28 +24,40 @@ import javax.servlet.http.HttpSession;
 // Defines the controller class for handling user login, logout, and registration within a Spring Boot application.
 @Controller
 public class LoginController {
+
     // Injects the LoginService to use its methods for login and registration operations.
     @Autowired
     private LoginService loginservice;
 
+    // Injects the RedisCodeService to use its methods for you verification code.
+    @Autowired
+    private RedisCodeService redisCodeService;
+
     // Handles the login validation process by checking username, password, and email against certain rules.
     @RequestMapping("/loginvalidate")
-    public String loginvalidate(@RequestParam("username") String username, @RequestParam("password") String pwd, @RequestParam("email") String email, HttpSession httpSession, RedirectAttributes redirectAttributes) {
+    public String loginvalidate(@RequestParam("username") String username, @RequestParam("password") String pwd, @RequestParam("email") String email, @RequestParam("code") String code, HttpSession httpSession, RedirectAttributes redirectAttributes) {
+
         // Checks if the username or password is null and returns a failure view if so.
         if (username == null || pwd == null) {
             return "commonfail";
         }
+
         // Validates the username with custom rules and checks its length, returning a failure view if it doesn't meet the criteria.
         if (!UsernameValidator.isValidUsername(username) || username.length() > 16) {
             return "usernamefail";
         }
+
         // Validates the password with custom rules and checks its length, returning a failure view if it doesn't meet the criteria.
         if (!PasswordValidator.isValid(pwd) || pwd.length() > 40) {
             return "passwdfail"; // Returns a view indicating password validation failure.
         }
+
         // Validates the email with custom rules and checks its length, returning a failure view if it doesn't meet the criteria.
         if(!EmailValidator.isValidEmail(email) || email.length() > 254){
             return "emailfail";
+        }
+        if(!code.equals(redisCodeService.getVerificationCode(username, email))){
+            return "wrongCode";
         }
         try {
             // Attempts to authenticate the user with the provided credentials.
@@ -101,19 +114,23 @@ public class LoginController {
 
     // Handles the user registration process, including validation of input and creation of new user.
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public String register(@RequestParam("username") String username, @RequestParam("password") String password, @RequestParam("email") String email, HttpSession session) {
+    public String register(@RequestParam("username") String username, @RequestParam("password") String password, @RequestParam("email") String email, @RequestParam("code") String code, HttpSession session) {
+
         // Checks if any of the registration fields are null and returns a failure view if so.
         if (username == null || password == null || email == null){
             return "commonfail";
         }
+
         // Validates the username and checks its length, returning a failure view if it doesn't meet the criteria.
         if (!UsernameValidator.isValidUsername(username) || username.length() > 16) {
             return "usernamefail";
         }
+
         // Validates the password and checks its length, returning a failure view if it doesn't meet the criteria.
         if (!PasswordValidator.isValid(password) || password.length() > 40) {
             return "passwdfail"; // Returns a view indicating password validation failure.
         }
+
         // Validates the email and checks its length, returning a failure view if it doesn't meet the criteria.
         if(!EmailValidator.isValidEmail(email) || email.length() > 254){
             return "emailfail";
@@ -127,6 +144,12 @@ public class LoginController {
         // Generates a salt and hashes the password for storage.
         String salt = HashTools.generateSalt(); // Generates a new salt.
         String hashedPassword = HashTools.hashWithSHA256(password, salt);
+
+        // Check the Verification code.
+        if(!redisCodeService.getVerificationCode(username, email).equals(code)){
+            return "wrongCode";
+        }
+
         // Attempts to add a new user with the provided details.
         boolean success = loginservice.addNewUser(username, hashedPassword, salt, email);
         if (success) {

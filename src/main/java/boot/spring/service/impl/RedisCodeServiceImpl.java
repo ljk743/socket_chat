@@ -15,9 +15,17 @@ public class RedisCodeServiceImpl implements RedisCodeService {
     private StringRedisTemplate stringRedisTemplate;
 
     @Override
-    public void saveVerificationCode(String email, String code) {
+    public void saveVerificationCode(String username, String email, String code) {
         ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
-        ops.set(email, code, 3, TimeUnit.MINUTES); // 设置验证码3分钟后过期
+        ops.set(username+email, code, 3, TimeUnit.MINUTES); // 设置验证码3分钟后过期
+    }
+
+    @Override
+    public String getVerificationCode(String username, String email) {
+        ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
+        // 使用username和email作为键来获取存储在Redis中的验证码
+        String code = ops.get(username+email);
+        return code; // 返回获取到的验证码，如果没有找到，将返回null
     }
 }
 

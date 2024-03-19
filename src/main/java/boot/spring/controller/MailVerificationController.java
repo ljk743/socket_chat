@@ -18,12 +18,12 @@ public class MailVerificationController {
     private RedisCodeService redisCodeService;
 
     @GetMapping("/getcode")
-    public String sendCode(@RequestParam String email) {
+    public String sendCode(@RequestParam String username, @RequestParam String email) {
         String code = generateCode();
-        System.out.println(email);
         mailservice.sendVerificationCode(email, code);
+        System.out.println(email+username);
         // 存储验证码逻辑
-        redisCodeService.saveVerificationCode(email, code);
+        redisCodeService.saveVerificationCode(username, email, code);
         return "Verification code sent.";
     }
 
