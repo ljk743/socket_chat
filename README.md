@@ -15,13 +15,17 @@ The traditional HTTP protocol generally realizes half-duplex communication by se
 **Env Requirements:**
 - JDK = 11 (Important for SSL)
 - Maven >= 3.8.1 (Tested)
-- Mysql-8 (Tested)
+- Mysql-8+ (Tested)
+- JetBrains-IDEA Ultimate
+- MinIO-latest version
+
+**Minio and Mysql SHOULD BE INSTALLED in a standalone server, and PLEASE: set up a bucket by yourself, GEN Access Key and Secret Key, then CHANGE configs in application.yml TO YOUR OWN ENVIRONMENT SETTINGS**.
+
+**We have already got the SSL set up, if you want to use https, change your settings under server: in application.yaml**
 
 #
 **To run the project on tomcat server:**
 - Use terminal to enter the current directory
 - execute **mvn clean install**
-- Enter **/target**
-- Copy socket_chat-0.0.1-SNAPSHOT.war to **your tomcat basedir/webapps**
-- Start your tomcat server
+- Click Build->Rebuild project to rebuild.
 - The url to login : **http://localhost:8080/login**

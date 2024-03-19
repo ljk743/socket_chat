@@ -1,41 +1,58 @@
 server:
-  port: 443
-  ssl:
-    key-store: classpath:keystore.p12
-    key-store-password: ljk123456
-    keyStoreType: PKCS12
-    keyAlias: spring
-
+  port: 8080 # Sets the server's listening port to 8080 for HTTP connections.
+  #port: 443 # This is a commented-out setting for changing the server port to 443 for HTTPS connections.
+  #ssl: # Starts the SSL configuration section, which is commented out. If enabled, it would configure SSL properties.
+    #key-store: classpath:keystore.p12 # Specifies the path to the SSL keystore file within the classpath.
+    #key-store-password: ljk123456 # The password for the keystore file.
+    #keyStoreType: PKCS12 # Specifies the type of the keystore file.
+    #keyAlias: spring # Specifies the alias name for the key in the keystore.
 
 spring:
-  datasource:
-    url: jdbc:mysql://localhost:3306/spring_websocket?serverTimezone=UTC
-    username: root
-    password: ljk123456
-    driver-class-name: com.mysql.cj.jdbc.Driver
-  servlet:
-    multipart:
-      max-file-size: 15MB
-      max-request-size: 15MB
+  redis: # Starts the Redis configuration section.
+    host: localhost # Specifies the Redis server host.
+    port: 6379 # Specifies the Redis server port.
+    password: ljk123456 # Specifies the password for Redis authentication.
 
+  datasource: # Starts the data source configuration section for database connections.
+    url: jdbc:mysql://localhost:3306/spring_websocket?serverTimezone=UTC # JDBC URL for the database connection.
+    username: root # Database username.
+    password: ljk123456 # Database password.
+    driver-class-name: com.mysql.cj.jdbc.Driver # Fully qualified name of the JDBC driver.
 
-logging:
-  config: classpath:log4j2.xml
-  level:
-    org.apache.shiro: info
+  servlet: # Servlet configuration.
+    multipart: # Configures multipart file upload settings.
+      max-file-size: 15MB # Maximum size for file uploads.
+      max-request-size: 15MB # Maximum size for multipart/form-data requests.
+
+  mail: # Starts the mail server configuration section.
+    host: smtp.gmail.com # SMTP server host.
+    port: 587 # SMTP server port.
+    username: wxandrew.co@gmail.com # Email account username for SMTP authentication.
+    # Use your generated App Password here instead of your regular password
+    password: ahnwcedisyievceb # App-specific password for the email account.
+    properties:
+      mail:
+        smtp:
+          auth: true # Enables SMTP authentication.
+          starttls:
+            enable: true # Enables STARTTLS command to switch the connection to a TLS-protected connection.
+
+logging: # Starts the logging configuration section.
+  config: classpath:log4j2.xml # Specifies the path to the logging configuration file within the classpath.
+  level: # Specifies logging levels for various components.
+    org.apache.shiro: info # Sets the logging level for Apache Shiro to INFO.
     org:
       springframework:
-        boot: DEBUG
+        boot: DEBUG # Sets the logging level for Spring Boot to DEBUG.
       apache:
-        catalina: DEBUG
+        catalina: DEBUG # Sets the logging level for Apache Catalina to DEBUG.
 
-minio:
-  access:
-    name: V84x2ZoK0NJjJs9XdDT7
-    secret: q5UTqgIXRbNCWVFywcs8rXH773qLdxFXzZM2s7R6
-  url: http://192.168.56.103:9000
-  bucket:
-    name: testbucket
+minio: # Starts the MinIO object storage configuration section.
+  access: # Access credentials for MinIO.
+    name: V84x2ZoK0NJjJs9XdDT7 # Access key.
+    secret: q5UTqgIXRbNCWVFywcs8rXH773qLdxFXzZM2s7R6 # Secret key.
+  url: http://192.168.56.103:9000 # URL to the MinIO server.
+  bucket: # Bucket configuration for MinIO.
+    name: testbucket # Name of the bucket to use.
 
-debug: true
-
+debug: true # Enables debug mode for additional logging and troubleshooting information.

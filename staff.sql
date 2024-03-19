@@ -22,19 +22,27 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- Table structure for staff
 -- ----------------------------
 DROP TABLE IF EXISTS `staff`;
-CREATE TABLE `staff`  (
-  `staff_id` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `username` varchar(16) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `password` varchar(40) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `last_update` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP(0),
-  PRIMARY KEY (`staff_id`) USING BTREE,
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
+-- spring_websocket.staff definition
+
+CREATE TABLE `staff` (
+    `staff_id` tinyint unsigned NOT NULL AUTO_INCREMENT,
+    `username` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+    `hashedpassword` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+    `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `salt` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+    `email` varchar(254) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+    PRIMARY KEY (`staff_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of staff
 -- ----------------------------
-INSERT INTO `staff` VALUES (1, 'Mike', '81dc9bdb52d04dc20036dbd8313ed055', '2024-01-29 14:27:38');
-INSERT INTO `staff` VALUES (2, 'Jon', '1234', '2024-01-29 14:27:38');
-INSERT INTO `staff` VALUES (3, 'TOM', '1234', '2024-1-11 11:08:10');
+INSERT INTO spring_websocket.staff
+(staff_id, username, hashedpassword, last_update, salt, email)
+VALUES(1, 'leak', '9d3f90ab3e82812c3482ab7ddc0f0a4acf2bd9567ded71ed50d22d4d241bdb24', '2024-03-14 02:50:24', 'ba4fa10e3e79c89ff791a2c9012f6487', '3309411542@qq.com');
+INSERT INTO spring_websocket.staff
+(staff_id, username, hashedpassword, last_update, salt, email)
+VALUES(8, 'ljk', '83bb5f09660a59eb5beac397e6b728a860bb26824580d8983864d06e9e3857ca', '2024-03-14 03:52:12', '5c8b923f5ef9169ddf47b90ac4aca02c', '3309411542@qq.com');
+
 
 SET FOREIGN_KEY_CHECKS = 1;
