@@ -20,110 +20,119 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
 
-
+// Defines the controller class for handling user login, logout, and registration within a Spring Boot application.
 @Controller
 public class LoginController {
+    // Injects the LoginService to use its methods for login and registration operations.
     @Autowired
     private LoginService loginservice;
 
+    // Handles the login validation process by checking username, password, and email against certain rules.
     @RequestMapping("/loginvalidate")
-    public String loginvalidate(@RequestParam("username") String username, @RequestParam("password") String pwd, @RequestParam("email") String email,HttpSession httpSession, RedirectAttributes redirectAttributes) {
-        // 检查用户名和密码是否为空
+    public String loginvalidate(@RequestParam("username") String username, @RequestParam("password") String pwd, @RequestParam("email") String email, HttpSession httpSession, RedirectAttributes redirectAttributes) {
+        // Checks if the username or password is null and returns a failure view if so.
         if (username == null || pwd == null) {
             return "commonfail";
         }
-        // 检验用户名是否严格符合规则
+        // Validates the username with custom rules and checks its length, returning a failure view if it doesn't meet the criteria.
         if (!UsernameValidator.isValidUsername(username) || username.length() > 16) {
             return "usernamefail";
         }
-        // 验证密码是否严格符合规则
+        // Validates the password with custom rules and checks its length, returning a failure view if it doesn't meet the criteria.
         if (!PasswordValidator.isValid(pwd) || pwd.length() > 40) {
-            return "passwdfail"; // 返回注册失败的视图
+            return "passwdfail"; // Returns a view indicating password validation failure.
         }
-        // 验证邮箱是否严格符合规则
+        // Validates the email with custom rules and checks its length, returning a failure view if it doesn't meet the criteria.
         if(!EmailValidator.isValidEmail(email) || email.length() > 254){
             return "emailfail";
         }
         try {
+            // Attempts to authenticate the user with the provided credentials.
             String salt = loginservice.getSaltByName(username);
             String hashedPassword = HashTools.hashWithSHA256(pwd, salt);
             UsernamePasswordToken token = new UsernamePasswordToken(username, hashedPassword);
             Subject currentUser = SecurityUtils.getSubject();
             currentUser.login(token);
 
+            // Checks if the current user is authenticated and sets session attributes accordingly.
             if (currentUser.isAuthenticated()) {
                 Long uid = loginservice.getUidbyname(username);
                 httpSession.setAttribute("uid", uid);
 
-                return "chatroom";
+                return "chatroom"; // Directs the user to the chatroom view if authentication is successful.
             } else {
-                // 这个分支实际上可能永远不会执行，因为如果认证失败，会直接抛出异常
+                // This branch might never execute because if authentication fails, an exception is thrown.
                 return "loginfail";
             }
         } catch (AuthenticationException ae) {
-            // 处理身份验证失败的情况
+            // Handles the case where authentication fails.
             System.out.println("Login Failed : " + ae.getMessage());
             return "loginfail";
         }
     }
 
-
+    // Directs to the login view.
     @RequestMapping("/login")
     public String login() {
         return "login";
     }
 
+    // Handles the logout process by invalidating the session and redirecting to the login view.
     @RequestMapping("/logout")
     public String logout(HttpSession httpSession) {
         httpSession.invalidate();
         return "login";
     }
 
+    // Provides the current logged-in user's details.
     @RequestMapping(value = "/currentuser", method = RequestMethod.GET)
     @ResponseBody
     public User currentuser(HttpSession httpSession) {
         Long uid = (Long) httpSession.getAttribute("uid");
         String name = loginservice.getnamebyid(uid);
-        return new User(uid, name);
+        return new User(uid, name); // Returns a User object with the current user's ID and name.
     }
 
+    // Directs to the registration view.
     @RequestMapping("/reg")
     public String reg() {
         return "reg";
     }
 
+    // Handles the user registration process, including validation of input and creation of new user.
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public String register(@RequestParam("username") String username, @RequestParam("password") String password, @RequestParam("email") String email, HttpSession session) {
-        // 检验是否为空
+        // Checks if any of the registration fields are null and returns a failure view if so.
         if (username == null || password == null || email == null){
             return "commonfail";
         }
-        // 检验用户名是否严格符合规则
+        // Validates the username and checks its length, returning a failure view if it doesn't meet the criteria.
         if (!UsernameValidator.isValidUsername(username) || username.length() > 16) {
             return "usernamefail";
         }
-        // 验证密码是否严格符合规则
+        // Validates the password and checks its length, returning a failure view if it doesn't meet the criteria.
         if (!PasswordValidator.isValid(password) || password.length() > 40) {
-            return "passwdfail"; // 返回注册失败的视图
+            return "passwdfail"; // Returns a view indicating password validation failure.
         }
-        // 验证邮箱是否严格符合规则
+        // Validates the email and checks its length, returning a failure view if it doesn't meet the criteria.
         if(!EmailValidator.isValidEmail(email) || email.length() > 254){
             return "emailfail";
         }
-        // 检查用户名是否已存在（需要在LoginService中实现此方法）
+        // Checks if the username already exists, indicating failure if so.
         boolean userExists = loginservice.checkUserExists(username);
         if (userExists) {
-            return "alreadyexists"; // 用户名已存在，返回失败视图
+            return "alreadyexists"; // Indicates that the username is already taken.
         }
 
-        String salt = HashTools.generateSalt(); // 生成盐
+        // Generates a salt and hashes the password for storage.
+        String salt = HashTools.generateSalt(); // Generates a new salt.
         String hashedPassword = HashTools.hashWithSHA256(password, salt);
-        // 添加新用户（需要在LoginService中实现此方法）
+        // Attempts to add a new user with the provided details.
         boolean success = loginservice.addNewUser(username, hashedPassword, salt, email);
         if (success) {
-            return "regOK"; // 如果注册成功，跳转到一个确认页面或登录页面
+            return "regOK"; // Directs to a success view if registration is successful.
         } else {
-            return "backendfail"; // 如果注册失败，返回注册页面并显示错误消息
+            return "backendfail"; // Returns a failure view if the registration process fails.
         }
     }
 
