@@ -33,9 +33,6 @@ public class FileController {
     @Value("${minio.access.secret}")
     private String secretKey;
 
-    @Value("${minio.url}")
-    private String minioUrl;
-
     @Value("${minio.bucket.name}")
     private String bucketName;
 
@@ -49,7 +46,7 @@ public class FileController {
     @PostConstruct
     public void init() {
         minioClient = MinioClient.builder()
-                .endpoint(minioUrl)
+                .endpoint("https://192.168.56.103")
                 .credentials(accessKey, secretKey)
                 .build();
     }
@@ -86,7 +83,7 @@ public class FileController {
                             .build());
 
             // Return the URL to the uploaded file
-            return minioUrl + "/" + bucketName + "/" + objectName;
+            return "https://192.168.56.103" + "/" + bucketName + "/" + objectName;
         } catch (MinioException e) {
             // Return error message for MinIO exceptions
             return "Failed to upload: MinIO server Error - " + e.getMessage();

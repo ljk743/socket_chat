@@ -1,15 +1,15 @@
 server:
-  port: 8080 # Sets the server's listening port to 8080 for HTTP connections.
-  #port: 443 # This is a commented-out setting for changing the server port to 443 for HTTPS connections.
-  #ssl: # Starts the SSL configuration section, which is commented out. If enabled, it would configure SSL properties.
-    #key-store: classpath:keystore.p12 # Specifies the path to the SSL keystore file within the classpath.
-    #key-store-password: ljk123456 # The password for the keystore file.
-    #keyStoreType: PKCS12 # Specifies the type of the keystore file.
-    #keyAlias: spring # Specifies the alias name for the key in the keystore.
+  #port: 8080 # Sets the server's listening port to 8080 for HTTP connections.
+  port: 443 # This is a commented-out setting for changing the server port to 443 for HTTPS connections.
+  ssl: # Starts the SSL configuration section, which is commented out. If enabled, it would configure SSL properties.
+    key-store: classpath:keystore.p12 # Specifies the path to the SSL keystore file within the classpath.
+    key-store-password: ljk123456 # The password for the keystore file.
+    keyStoreType: PKCS12 # Specifies the type of the keystore file.
+    keyAlias: spring # Specifies the alias name for the key in the keystore.
 
 spring:
   redis: # Starts the Redis configuration section.
-    host: localhost # Specifies the Redis server host.
+    host: 192.168.56.103 # Specifies the Redis server host.
     port: 6379 # Specifies the Redis server port.
     password: ljk123456 # Specifies the password for Redis authentication.
 
@@ -51,7 +51,7 @@ minio: # Starts the MinIO object storage configuration section.
   access: # Access credentials for MinIO.
     name: V84x2ZoK0NJjJs9XdDT7 # Access key.
     secret: q5UTqgIXRbNCWVFywcs8rXH773qLdxFXzZM2s7R6 # Secret key.
-  url: http://192.168.56.103:9000 # URL to the MinIO server.
+  #url: https://192.168.56.103 # URL to the MinIO server.
   bucket: # Bucket configuration for MinIO.
     name: testbucket # Name of the bucket to use.
 

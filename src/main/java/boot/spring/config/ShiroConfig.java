@@ -87,6 +87,7 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/register", "anon");
         filterChainDefinitionMap.put("/reg", "anon");
         filterChainDefinitionMap.put("/onlineusers", "authc");
+        filterChainDefinitionMap.put("/upload", "authc");
         filterChainDefinitionMap.put("/webSocket/*", "authc");
         filterChainDefinitionMap.put("/currentuser", "authc");
         shiroFilter.setFilterChainDefinitionMap(filterChainDefinitionMap);

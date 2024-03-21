@@ -97,7 +97,7 @@ Date.prototype.format = function(fmt) {
     		
 	        if ('WebSocket' in window) {
 				//Websocket URL
-				websocket = new WebSocket("ws://localhost:8080/webSocket/"+user);
+				websocket = new WebSocket("wss://localhost/webSocket/"+user);
 				//websocket = new WebSocket("wss://localhost:8080/webSocket/"+user);
 			}
 			websocket.onmessage = function(event) {
