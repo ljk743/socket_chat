@@ -12,6 +12,9 @@ spring:
     host: 192.168.56.103 # Specifies the Redis server host.
     port: 6379 # Specifies the Redis server port.
     password: ljk123456 # Specifies the password for Redis authentication.
+    #sentinel:
+    #  nodes: 192.168.56.103:6379
+    #  master: redis-master
 
   datasource: # Starts the data source configuration section for database connections.
     url: jdbc:mysql://localhost:3306/spring_websocket?serverTimezone=UTC # JDBC URL for the database connection.

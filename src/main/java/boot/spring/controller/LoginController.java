@@ -2,7 +2,7 @@ package boot.spring.controller;
 
 import boot.spring.po.User;
 import boot.spring.service.LoginService;
-import boot.spring.service.RedisCodeService;
+import boot.spring.service.RedisService;
 import boot.spring.utils.EmailValidator;
 import boot.spring.utils.HashTools;
 import boot.spring.utils.PasswordValidator;
@@ -29,9 +29,9 @@ public class LoginController {
     @Autowired
     private LoginService loginservice;
 
-    // Injects the RedisCodeService to use its methods for you verification code.
+    // Injects the RedisService to use its methods for you verification code.
     @Autowired
-    private RedisCodeService redisCodeService;
+    private RedisService redisService;
 
     // Handles the login validation process by checking username, password, and email against certain rules.
     @RequestMapping("/loginvalidate")
@@ -56,9 +56,9 @@ public class LoginController {
         if(!EmailValidator.isValidEmail(email) || email.length() > 254){
             return "emailfail";
         }
-        /**if(!code.equals(redisCodeService.getVerificationCode(username, email))){
-            return "wrongCode";
-        }**/
+        //if(!code.equals(redisService.getVerificationCode(username, email))){
+        //    return "wrongCode";
+        //}
         try {
             // Attempts to authenticate the user with the provided credentials.
             String salt = loginservice.getSaltByName(username);
@@ -146,7 +146,7 @@ public class LoginController {
         String hashedPassword = HashTools.hashWithSHA256(password, salt);
 
         // Check the Verification code.
-        if(!redisCodeService.getVerificationCode(username, email).equals(code)){
+        if(!redisService.getVerificationCode(username, email).equals(code)){
             return "wrongCode";
         }
 

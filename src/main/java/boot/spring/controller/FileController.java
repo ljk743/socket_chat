@@ -22,9 +22,6 @@ import java.util.UUID;
  */
 @RestController
 public class FileController {
-    // Autowire the LoginService
-    @Autowired
-    LoginService loginService;
 
     // Inject configuration properties for MinIO access
     @Value("${minio.access.name}")

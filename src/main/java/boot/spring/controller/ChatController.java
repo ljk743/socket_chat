@@ -22,8 +22,8 @@ import boot.spring.service.WebSocketServer;
 public class ChatController {
 
 	// Autowire the LoginService to use its functionalities
-	@Autowired
-	LoginService loginservice;
+	// @Autowired
+	// LoginService loginservice;
 
 	/**
 	 * Method to fetch online users excluding the current user.

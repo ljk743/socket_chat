@@ -1,16 +1,18 @@
 package boot.spring.service;
 
-import boot.spring.po.Message; // Importing the Message class from the boot.spring.po package.
-import com.alibaba.fastjson.JSON; // Importing JSON processing tools from Alibaba's fastjson library.
-import org.springframework.stereotype.Component; // Annotation to declare that this class is a Spring-managed component.
+import boot.spring.po.Message;
+import boot.spring.utils.AESUtil;
+import com.alibaba.fastjson.JSON;
+import org.springframework.data.redis.core.ListOperations;
+import org.springframework.stereotype.Component;
 
-import javax.websocket.*; // Importing classes and interfaces for working with WebSocket API.
-import javax.websocket.server.PathParam; // Annotation to bind a method parameter or class field to a URI template variable.
-import javax.websocket.server.ServerEndpoint; // Annotation that declares the class as a WebSocket endpoint.
-import java.io.IOException; // Importing the IOException class for handling IO exceptions.
-import java.util.Date; // Importing the Date class for working with dates.
-import java.util.concurrent.ConcurrentHashMap; // Importing the ConcurrentHashMap class for thread-safe hash maps.
-import java.util.concurrent.atomic.AtomicInteger; // Importing the AtomicInteger class for thread-safe integer operations.
+import javax.websocket.*;
+import javax.websocket.server.PathParam;
+import javax.websocket.server.ServerEndpoint;
+import java.io.IOException;
+import java.util.Date;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 // Declaring this class as a WebSocket server endpoint, listening on the path "/webSocket/{username}".
 @ServerEndpoint("/webSocket/{username}")
@@ -104,8 +106,9 @@ public class WebSocketServer {
 
     // Method called when a message is received from a client.
     @OnMessage
-    public void onMessage(String message) throws IOException {
+    public void onMessage(String message) throws Exception {
         System.out.println("Server received: " + message);
+        String emsg = AESUtil.encrypt(message);
         Message msg = JSON.parseObject(message, Message.class); // Parsing the message from JSON to a Message object.
         msg.setDate(new Date());
         if (msg.getTo().equals("-1")) { // Checking if the message is meant for broadcasting.

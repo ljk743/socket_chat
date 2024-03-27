@@ -1,11 +1,13 @@
 package boot.spring.service;
 
+import java.util.List;
+
 /**
- * The RedisCodeService interface defines operations for managing verification codes in Redis.
+ * The RedisService interface defines operations for managing verification codes in Redis.
  * This service interface specifies methods for saving a verification code for a given username and email,
  * as well as retrieving a verification code for a given username and email combination.
  */
-public interface RedisCodeService {
+public interface RedisService {
 
     /**
      * Saves a verification code associated with a specific username and email address.
@@ -29,4 +31,8 @@ public interface RedisCodeService {
      * @return the verification code as a String, or null if no code exists for the given username and email.
      */
     String getVerificationCode(String username, String email);
+
+    void saveMessage(String key,String value);
+
+    List<String> getMessage(String key) throws Exception;
 }

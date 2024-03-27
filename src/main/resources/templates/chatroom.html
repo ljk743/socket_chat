@@ -64,6 +64,22 @@ body{
     	</div>
     </div> 
 <script>
+	function sendMessageRequest(a) {
+		var requestSent = false;
+
+		if (!requestSent) {
+			requestSent === true;
+			$.get("/restoremessages?currentuser=" + a)
+					.done(function(response) {
+						console.log('Success', response);
+					})
+					.fail(function(xhr, status, error) {
+						console.log('Error', error);
+					})
+					.always(function() {
+					});
+		}
+	}
 Date.prototype.format = function(fmt) { 
      var o = { 
         "M+" : this.getMonth()+1,                 //Month
@@ -93,6 +109,7 @@ Date.prototype.format = function(fmt) {
     	$.get("/currentuser",function(data){
     		user = data.name;
     		uid = data.uid;
+			sendMessageRequest(user);
     		$("#user").html(user);
     		
 	        if ('WebSocket' in window) {
@@ -101,12 +118,12 @@ Date.prototype.format = function(fmt) {
 				//websocket = new WebSocket("wss://localhost:8080/webSocket/"+user);
 			}
 			websocket.onmessage = function(event) {
-	       	 var data=JSON.parse(event.data);
-	            if(data.to==0){//Online message
+				var data=JSON.parse(event.data);
+				if(data.to==0){//Online message
 	            	if(data.text!=user)
 	            	{	
 	            		$("#users").append('<a href="#" onclick="talk(this)" class="list-group-item">'+data.text+'</a>');
-	            		alert(data.text + "is offline");
+	            		alert(data.text + "is online");
 	            	}
 	            }else if(data.to==-2){//Offline message
 	            	if(data.text!=user)
@@ -150,12 +167,26 @@ Date.prototype.format = function(fmt) {
 					}else{
 		            	$("#log-container").append("<div class='bg-info'><label class='text-danger'>"+data.from+"&nbsp;"+data.date+"</label><div class='text-success'>"+data.text+"</div></div><br>");
 					}
+					$.ajax({
+						url: '/savemessage',
+						type: 'POST',
+						data: JSON.stringify(data), // Convert your JSON object to a string
+						contentType: 'application/json', // Set the content type to application/json
+						success: function(response) {
+							// Handle success
+							console.log(response);
+						},
+						error: function(xhr, status, error) {
+							// Handle error
+							console.log(error);
+						}
+					});
 					// Scroll the page to bottom
 		            scrollToBottom();
 	            }
 	        };
 	        
-	        $.post("/onlineusers?currentuser="+user,function(data){
+	        $.post("/onlineusers?currentuser=" + user,function(data){
     		for(var i=0;i<data.length;i++)
     			$("#users").append('<a href="#" onclick="talk(this)" class="list-group-item">'+data[i]+'</a>');
     		});
@@ -225,7 +256,7 @@ Date.prototype.format = function(fmt) {
 					// Decide what to do according to the file type
 					if (imageExtensions.includes(fileExtension)) {
 						// If it is a picture, use the < img > tag to render
-						$("#log-container").append("<div class='bg-success'><label class='text-info'>我&nbsp;" + new Date().format("yyyy-MM-dd hh:mm:ss") + '</label><br><img src=\"' + fileUrl + '\" alt=\"Image\" style=\"max-width:60%;\">' +"</div><br>");
+						$("#log-container").append("<div class='bg-success'><label class='text-info'>Me&nbsp;" + new Date().format("yyyy-MM-dd hh:mm:ss") + '</label><br><img src=\"' + fileUrl + '\" alt=\"Image\" style=\"max-width:60%;\">' +"</div><br>");
 					} else {
 						// Other file types, provide download links
 						$("#log-container").append(
@@ -258,8 +289,8 @@ Date.prototype.format = function(fmt) {
 	});
    
    function talk(a){
-   	$("#talktitle").text("Chat with "+a.innerHTML);
-   	$("body").data("to",a.innerHTML);
+	   $("#talktitle").text("Chat with "+a.innerHTML);
+	   $("body").data("to",a.innerHTML);
    }
    function scrollToBottom(){
 		var div = document.getElementById('log-container');

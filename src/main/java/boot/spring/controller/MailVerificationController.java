@@ -1,7 +1,7 @@
 package boot.spring.controller;
 
 import boot.spring.service.MailService;
-import boot.spring.service.RedisCodeService;
+import boot.spring.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,7 +15,7 @@ public class MailVerificationController {
     @Autowired
     private MailService mailservice;
     @Autowired
-    private RedisCodeService redisCodeService;
+    private RedisService redisService;
 
     @GetMapping("/getcode")
     public String sendCode(@RequestParam String username, @RequestParam String email) {
@@ -23,7 +23,7 @@ public class MailVerificationController {
         mailservice.sendVerificationCode(email, code);
         System.out.println(email+username);
         // The way to store the token
-        redisCodeService.saveVerificationCode(username, email, code);
+        redisService.saveVerificationCode(username, email, code);
         return "Verification code sent.";
     }
 
