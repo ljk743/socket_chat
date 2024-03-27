@@ -59,32 +59,70 @@ public class RedisServiceImpl implements RedisService {
         return code;
     }
 
+    /**
+     * Saves a message associated with a specific key in Redis.
+     * This method utilizes the `ListOperations` from `StringRedisTemplate` to perform list operations in Redis.
+     * It adds the provided message value to the end of the list associated with the given key,
+     * ensuring that messages are stored in the order they are received.
+     *
+     * @param key The key under which the message should be saved in Redis. This key acts as an identifier
+     *            for the list to which the message will be added. Typically, this could represent a user ID,
+     *            a chat room ID, or any other identifier that groups messages together.
+     * @param value The message to be saved. The message is stored as a string and can be in any format
+     *              (e.g., plain text, JSON, serialized object). The format should be consistent with how
+     *              the `getMessage` method expects to retrieve and process these messages.
+     */
     @Override
-    public void saveMessage(String key, String value){
-        // Get the ListOperations bean from the StringRedisTemplate for list operations
+    public void saveMessage(String key, String value) {
+        // Get the ListOperations bean from the StringRedisTemplate for performing operations on Redis lists.
         ListOperations<String, String> opsForList = stringRedisTemplate.opsForList();
 
-        // Use rightPush to add the value to the end of the list identified by the key
-        // This ensures that newer messages are added to the "right" end (tail) of the list
+        // Use rightPush to add the value to the end of the list identified by the key.
+        // This ensures that newer messages are added to the "right" end (tail) of the list,
+        // maintaining the order of messages as they are received and saved.
         opsForList.rightPush(key, value);
     }
 
+    /**
+     * Retrieves the last nine messages associated with a specific key from Redis, decrypting each message.
+     * This method uses `ListOperations` from `StringRedisTemplate` and fetches a range of elements from
+     * the list, specifically the last nine elements, to provide a snapshot of the most recent messages.
+     * It then decrypts each message before returning them.
+     *
+     * @param key The key for which to retrieve the associated messages from Redis. This is the same key
+     *            that was used to save the messages via the `saveMessage` method.
+     * @return A list of decrypted messages associated with the specified key, limited to the last nine
+     *         messages for efficiency and relevance. The list could be shorter if fewer messages are available.
+     * @throws Exception If an error occurs during the retrieval or decryption process. The method is designed
+     *                   to propagate exceptions, including those from the decryption process, to allow the caller
+     *                   to handle them appropriately, possibly indicating issues with data integrity or availability.
+     */
     @Override
     public List<String> getMessage(String key) throws Exception {
         ListOperations<String, String> opsForList = stringRedisTemplate.opsForList();
-        // Assume listSize is the current length of the list
+        // Retrieve the current size of the list in Redis associated with the given key.
         long listSize = opsForList.size(key);
-        // Calculate the start and end indexes to get the last nine elements
+
+        // Calculate the start and end indexes to get the last nine elements of the list.
         long start = listSize - 9;
-        long end = -1; // End of the list
-        // If there are fewer than 9 elements in the list, start getting from the first element
+        long end = -1; // A special value indicating the end of the list.
+
+        // Ensure the start index is not negative, which would happen if the list contains fewer than nine elements.
+        // This adjustment ensures that we always start from the beginning of the list in such cases.
         start = Math.max(start, 0);
+
+        // Retrieve the range of messages from Redis, from the calculated start index to the end of the list.
         List<String> recentElements = opsForList.range(key, start, end);
-        List<String> o = new ArrayList<>();
-        for(int i = 0;i < recentElements.size(); i++){
-            o.add(AESUtil.decrypt(recentElements.get(i)));
-            System.out.println(o.get(i));
+
+        // Decrypt each message before returning them.
+        List<String> decryptedMessages = new ArrayList<>();
+        for (String encryptedMessage : recentElements) {
+            // Decrypt each message using AESUtil and add it to the list of decrypted messages.
+            decryptedMessages.add(AESUtil.decrypt(encryptedMessage));
         }
-        return o;
+
+        // Return the list of decrypted messages.
+        return decryptedMessages;
     }
+
 }

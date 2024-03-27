@@ -56,9 +56,9 @@ public class LoginController {
         if(!EmailValidator.isValidEmail(email) || email.length() > 254){
             return "emailfail";
         }
-        //if(!code.equals(redisService.getVerificationCode(username, email))){
-        //    return "wrongCode";
-        //}
+        if(!code.equals(redisService.getVerificationCode(username, email))){
+            return "wrongCode";
+        }
         try {
             // Attempts to authenticate the user with the provided credentials.
             String salt = loginservice.getSaltByName(username);

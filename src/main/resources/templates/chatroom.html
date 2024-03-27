@@ -64,22 +64,7 @@ body{
     	</div>
     </div> 
 <script>
-	function sendMessageRequest(a) {
-		var requestSent = false;
 
-		if (!requestSent) {
-			requestSent === true;
-			$.get("/restoremessages?currentuser=" + a)
-					.done(function(response) {
-						console.log('Success', response);
-					})
-					.fail(function(xhr, status, error) {
-						console.log('Error', error);
-					})
-					.always(function() {
-					});
-		}
-	}
 Date.prototype.format = function(fmt) { 
      var o = { 
         "M+" : this.getMonth()+1,                 //Month
@@ -109,7 +94,6 @@ Date.prototype.format = function(fmt) {
     	$.get("/currentuser",function(data){
     		user = data.name;
     		uid = data.uid;
-			sendMessageRequest(user);
     		$("#user").html(user);
     		
 	        if ('WebSocket' in window) {
@@ -131,7 +115,9 @@ Date.prototype.format = function(fmt) {
 	            		$("#users > a").remove(":contains('"+data.text+"')");
 	            		alert(data.text + "is offline");
 	            	}
-	            }else {
+	            }else if (data.to==-1){
+					$("#log-container").append("<div class='bg-info'><label class='text-danger'>"+data.from+"&nbsp;"+data.date+"</label><div class='text-success'>"+data.text+"</div></div><br>");
+				}else{
 	            	// Common message
 		            // Receive the real-time message from the server and add it to the HTML page
 					if (data.files) {
@@ -190,8 +176,19 @@ Date.prototype.format = function(fmt) {
     		for(var i=0;i<data.length;i++)
     			$("#users").append('<a href="#" onclick="talk(this)" class="list-group-item">'+data[i]+'</a>');
     		});
-    	
-    	});
+			let isCalled = false;
+
+			if (!isCalled) {
+				isCalled = true;
+				$.get("/restoremessages?currentuser=" + user, function(data){
+					for(var i = 0; i < data.length; i++) {
+						var formatData = JSON.parse(data[i]);
+						$("#log-container").append("<div class='bg-info'><label class='text-danger'>" + formatData.from + "&nbsp;" + formatData.date + "</label><div class='text-success'>" + formatData.text + "</div></div><br>");
+					}
+				});
+			}
+
+		});
 
 
         $("#broadcast").click(function(){
@@ -200,6 +197,20 @@ Date.prototype.format = function(fmt) {
 			data["to"] = -1;
 			data["text"] = $("#msg").val();
 			websocket.send(JSON.stringify(data));
+			$.ajax({
+				url: '/savemessage',
+				type: 'POST',
+				data: JSON.stringify(data), // Convert your JSON object to a string
+				contentType: 'application/json', // Set the content type to application/json
+				success: function(response) {
+					// Handle success
+					console.log(response);
+				},
+				error: function(xhr, status, error) {
+					// Handle error
+					console.log(error);
+				}
+			});
         });
         
         $("#send").click(function() {
@@ -284,7 +295,7 @@ Date.prototype.format = function(fmt) {
 				}
 			});
 		});
-
+		//console.log(user)
 
 	});
    
